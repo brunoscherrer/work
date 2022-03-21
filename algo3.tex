@@ -162,9 +162,13 @@ The result follows by the facts that $v_*(x) = v_{\mu_*,\nu_*}(x) \le v_{\mu_*,\
 
 \section{A Policy Iteration procedure}
 
-Extend the binary relations $(=,<,\le,>,\ge)$ to $\{0,1\}\times \R$ by using the lexicographic order. For instance,
+Consider the extension of the binary relations $(=,<,\le,>,\ge)$ to $\{0,1\}\times \R$ by using the lexicographic order. For instance,
 \begin{align}
   (a,b) < (a',b') ~~\Leftrightarrow~~ a<a' \mbox{ or }(a=a' \mbox{ and }b<b').
+\end{align}
+Consider also the componentwise substraction:
+\begin{align}
+  (a,b) - (a',b') = (a-a',b-b').
 \end{align}
 For any $c \in \R^n$, consider the following operators on $\{0,1\}^n \times \R^n$
 \begin{align}

@@ -1,0 +1,175 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+\usepackage{stmaryrd}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{corollary}{Corollary}
+
+
+\title{A polynomial algorithm for the deterministic mean payoff game}
+
+\author{Bruno Scherrer}
+\def\R{\mathds R}
+\def\1{{\mathds 1}}
+
+\newcommand{\intset}[1]{\llbracket #1 \rrbracket}
+\newcommand{\intpart}[1]{\lceil #1 \rceil}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+...
+\end{abstract}
+  
+We consider an infinite-horizon game on a directed graph $(X,E)$ between two players, MAX and MIN. For any vertex $x$, we write $E(x)=\{y;(x,y) \in E\}$ for the set of vertices that can be reached from $x$ by following one edge and we assume $E(x)\neq\emptyset$.  The set of vertices $X=\{1,2,\dots,n\}$ of the graph is partitionned into the sets $X_+$ and $X_-$ of nodes respectively controlled by MAX and MIN. The game starts in some vertex $x_0$. At each time step, the player who controls the current vertex chooses a next vertex by following an edge. So on and so forth, the choices generate an infinitely long trajectory $(x_0,x_1,\dots)$. In the mean payoff game, the goal of MAX is to maximize
+\begin{align}
+\lim\inf_{T \to \infty} \frac 1 T \sum_{t=0}^{T} r(x_t),
+\end{align}
+while that of MIN is to minimize
+\begin{align}
+\lim\sup_{T \to \infty} \frac 1 T \sum_{t=0}^{T} r(x_t).
+\end{align}
+As a proxy to solve the mean payoff game, our technical developments will mainly consider the $\gamma$-discounted payoff for some $0\le\gamma<1$, where the goal of MAX is to maximize
+\begin{align}
+(1-\gamma)\sum_{t=0}^{\infty} \gamma^t r(x_t)
+\end{align}
+while that of MIN is to minimize this quantity.
+
+LITERATURE
+
+\section{Preliminaries}
+
+Let $M$ and $N$ be the set of stationary policies for MAX and MIN:
+\begin{align}
+  M &= \{ \mu:X_+ \to X ~;~ \forall x\in X_+,~ \mu(x) \in E(x) \}, \\
+  N & =\{ \nu:X_- \to X ~;~ \forall x\in X_-,~ \nu(x) \in E(x) \}.
+\end{align}
+
+For any policies $\mu \in M$ and $\nu \in N$, let us write $P_{\mu,\nu}$ for the transition matrix induced by $\mu$ and $\nu$:
+\begin{align}
+  \forall x \in X_+, \forall y \in X, ~~~P_{\mu,\nu}(x,y)=\1_{\mu(x)=y}, \\
+  \forall x \in X_-, \forall y \in X, ~~~P_{\mu,\nu}(x,y)=\1_{\nu(x)=y}.
+\end{align} 
+Seeing the reward $r:X \to {0,1,\dots,R}$ and any function $v:X \to \R$ as vectors of $\R^n$, consider the following Bellman operators
+\begin{align}
+  T_{\mu,\nu}v & = (1-\gamma)r + \gamma P_{\mu,\nu}v, \\
+  T_{\mu}v & = \min_{\nu} T_{\mu,\nu}v, \\
+  \tilde T_{\nu}v & = \max_\mu T_{\mu,\nu}v, \\
+  T v & =\max_\mu T_{\mu }v = \min_\nu \tilde T_{\nu}v.
+\end{align}
+that are $\gamma$-contractions with respect to the max-norm $\|\cdot\|$, defined for all $u \in R^n$ as $\|u\|=\max_{x \in X} |u(x)|$.
+For any policies $\mu \in M$ and $\nu \in N$, the value $v_{\mu,\nu}(x)$ obtained by following policies $\mu$ and $\nu$ satisfies
+\begin{align}
+v_{\mu,\nu} = (1-\gamma)\sum_{t=0}^\infty (\gamma P_{\mu,\nu})^t r = (1-\gamma)(I-\gamma P_{\mu,\nu})^{-1}r,
+\end{align}
+and is the only fixed point of the operator $T_{\mu,\nu}$.
+Given any policy $\mu$ for MAX, the minimal value that MIN can obtain
+\begin{align}
+  v_{\mu} = \min_{\nu} v_{\mu,\nu}
+\end{align}
+is the fixed point of the operator $T_\mu$, and it is well known that any policy $\nu_+$ for MIN such that $T_{\mu,\nu_+}v_\mu = T_\mu v_\mu = v_\mu$ is optimal.
+Symmetrically, given any policy $\nu$ for MIN, the maximal value that MAX can obtain
+\begin{align}
+  \tilde v_{\mu} = \max_{\nu} v_{\mu,\nu}
+\end{align}
+is the fixed point of $\tilde T_\nu$, and it is well known that any policy $\mu_+$ for MAX such that $T_{\mu_+,\nu}v_\mu = \tilde T_\nu \tilde v_\nu = \tilde v_\nu$ is optimal.
+The optimal value
+\begin{align}
+  v_* = \max_{\mu} \min_{\nu} v_{\mu,\nu}
+\end{align}
+is the fixed point of the operator $T$. Let $(\mu_*,\nu_*)$ be any pair of positional strategies such that $T_{\mu_*,\nu_*}v_*=T v_*$. It is well-known that $(\mu_*,\nu_*)$ is optimal.
+
+
+\section{Algorithm}
+
+Consider the following algorithm that iterates on policies of player MAX.
+\begin{align}
+  v_k &= T_{\mu_k}v_k, \\
+  T^{n} v_k &= T_{\vec\mu_{k+1}'} v_k
+\end{align}
+
+
+\section{Analysis}
+
+
+\paragraph{A local Bellman equation}
+
+Our main technical result is the following observation.
+\begin{lemma}
+  For any $v$, such that $v\le Tv$,
+  \begin{align}
+    v_* - T^n v \le \frac{T^n v - v}{1-\gamma}.
+  \end{align}
+\end{lemma}
+\begin{proof}
+    First, observe that by the monotonicity of $T$, and since $v \le Tv$, we have
+  \begin{align}
+    v \le Tv \le T^2 v \le \dots \le T^n v.
+  \end{align}
+  
+  Let $\nu_1,\dots,\nu_n$ be a set of policies such that
+  \begin{align}
+    T^n v = \tilde T_{\nu_1} \dots \tilde T_{\nu_n} v.
+  \end{align}
+  
+  Take any starting state $x$. By the pigeonhole principle, there necessarily exist $i,c,y$ such that $0 \le i < i+c \le n$ and
+  \begin{align}
+    \1_y = \1_x P_{\mu_*,\nu_1} \dots P_{\mu_*,\nu_i} = \1_x P_{\mu_*,\nu_1} \dots P_{\mu_*,\nu_{i+c}}.
+  \end{align}
+  Consider a play where MAX uses $\mu_*$ and MIN uses the policy $\nu = \nu_1 \dots \nu_i (\nu_{i+1} \dots \nu_{i+c})^\infty$: the trajectory formed by this play is a path of length $i$ followed by an infinitely repeated cycle of length $c$.
+  By a telescoping argument, we have for any $w$, 
+  \begin{align}
+    v_{\mu_*,\nu}(x) - w(x) & = \1_x (T_{\mu_*,\nu_1} \dots T_{\mu_*,\nu_{i+c}}w - w) + \gamma^{i+c} \1_y (I-\gamma^c P_{\mu_*,\nu_i} \dots P_{\mu_*,\nu_{i+c}})^{-1}(T_{\mu_*,\nu_{i+1}} \dots T_{\mu_*,\nu_{i+c}} w - w) \\
+    & = \1_x (T_{\mu_*,\nu_1} \dots T_{\mu_*,\nu_{i+c}}w - w) + \frac{\gamma^{i+c}}{1-\gamma^c} \1_y (T_{\mu_*,\nu_{i+1}} \dots T_{\mu_*,\nu_{i+c}} w - w)  \\
+    & \le \1_x (\tilde T_{\nu_1} \dots \tilde T_{\nu_{i+c}}w - w) + \frac{\gamma^{i+c}}{1-\gamma^c} \1_y (\tilde T_{\nu_{i+1}} \dots \tilde T_{\nu_{i+c}} w - w)
+  \end{align}
+  Taking $w = \tilde T_{\nu_{i+c+1}} \dots T_{\nu_{n}}v $, and recalling the definition of $\nu_1,\dots,\nu_n$, we obtain
+  \begin{align}
+    v_{\mu_*,\nu}(x) - w(x) & \le \1_x (T^n v - v) + \frac{\gamma^{i+c}}{1-\gamma^c} \1_y (T^{n-i}v - v)
+  \end{align}
+  
+
+
+\end{proof}
+
+
+
+\begin{align}
+ v_{k+1} - v_k & = (I-\gamma^n P_{\vec\mu_{k+1},\vec\nu_{k+1}})^{-1} (T_{\vec\mu_{k+1},\vec\nu_{k+1}} v_k - v_k) \\
+ & = \frac{1}{1-\gamma^n}  (T_{\vec\mu_{k+1},\vec\nu_{k+1}}v_k - v_k) \\
+ & \ge \frac{1}{1-\gamma^n}  (T_{\vec\mu_{k+1}}v_k - v_k) \\
+ & = \frac{1}{1-\gamma^n}  (T^n v_k - v_k) \\
+ & \ge \frac{1-\gamma}{1-\gamma^n}  (v_* - T^n v_k) \\
+ & \ge \frac{1}{n}  (v_* - T^n v_k) \\
+ & = \frac{1}{n}  (v_* - T_{\vec\mu_{k+1},\vec\nu_{k+1}} v_k) \\
+ & \ge \frac{1}{n}  (v_* - v_{k+1}).
+\end{align}
+
+As a consequence:
+\begin{align}
+  v_* - v_{k+1} & = v_* - v_k - (v_{k+1} - v_k) \\
+  & \le \left(1 - \frac{1}{n} \right) (v_* - v_k).
+\end{align}
+
+
+
+
+
+\bibliographystyle{plain}
+\bibliography{biblio}
+
+
+\end{document}
+
+
