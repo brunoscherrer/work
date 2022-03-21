@@ -1,0 +1,195 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+\usepackage{stmaryrd}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{corollary}{Corollary}
+
+
+\title{A polynomial algorithm for the deterministic mean payoff game}
+
+\author{Bruno Scherrer}
+\def\R{\mathds R}
+\def\1{{\mathds 1}}
+
+\newcommand{\intset}[1]{\llbracket #1 \rrbracket}
+\newcommand{\intpart}[1]{\lceil #1 \rceil}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+...
+\end{abstract}
+  
+We consider an infinite-horizon game on a directed graph $(X,E)$ between two players, MAX and MIN. For any vertex $x$, we write $E(x)=\{y;(x,y) \in E\}$ for the set of vertices that can be reached from $x$ by following one edge and we assume $E(x)\neq\emptyset$.  The set of vertices $X=\{1,2,\dots,n\}$ of the graph is partitionned into the sets $X_+$ and $X_-$ of nodes respectively controlled by MAX and MIN. The game starts in some vertex $x_0$. At each time step, the player who controls the current vertex chooses a next vertex by following an edge. So on and so forth, the choices generate an infinitely long trajectory $(x_0,x_1,\dots)$. In the mean payoff game, the goal of MAX is to maximize
+\begin{align}
+\lim\inf_{T \to \infty} \frac 1 T \sum_{t=0}^{T}  r(x_t),
+\end{align}
+while that of MIN is to minimize
+\begin{align}
+\lim\sup_{T \to \infty} \frac 1 T \sum_{t=0}^{T}  r(x_t).
+\end{align}
+As a proxy to solve the mean payoff game, our technical developments will mainly consider the $\gamma$-discounted payoff for some $0\le\gamma<1$, where the goal of MAX is to maximize
+\begin{align}
+\sum_{t=0}^{\infty} \gamma^t r(x_t)
+\end{align}
+while that of MIN is to minimize this quantity.
+
+SUMMARY
+
+\section{Notations and Preliminaries}
+
+M N
+
+For any pair of policies $\mu:X_+ \to X$ for MAX and $\nu:X_-$ for MIN (mappings such that for all $x$, $\mu(x) \in E(x)$ and $\nu(x) \in E(x)$), let us write $P_{\mu,\nu}$ for the transition matrix: for all $(x,y) \in \{1,2,\dots,n\}^2$, $P_{\mu,\nu}(x,y)$ equals $1$ if and only if $\mu$ and $\nu$ induce a transition $x \to y$ and $0$ else. 
+Seeing the reward $r:X \to {0,1,\dots,R}$ and any function $v:X \to \R$ as vectors of $\R^n$, consider the following Bellman operators
+\begin{align}
+  T_{\mu,\nu}v & = r + \gamma P_{\mu,\nu}v, \\
+  T_{\mu}v & = \min_{\nu} T_{\mu,\nu}v \\
+  \tilde T_{\nu}v & = \max_\mu T_{\mu,\nu}v \\
+  T v & =\max_\mu T_{\mu }v = \min_\nu \tilde T_{\nu}v
+\end{align}
+that are $\gamma$-contractions with respect to the max-norm.
+For all pairs of policies $(\mu,\nu)$, the value is
+\begin{align}
+v_{\mu,\nu} = \sum_{t=0}^\infty (\gamma P_{\mu,\nu})^t g = (I-\gamma P_{\mu,\nu})^{-1}r
+\end{align}
+and is the only fixed point of $T_{\mu,\nu}$.
+Given any policy $\mu$ for MAX, the minimal value that MIN can obtain
+\begin{align}
+  v_{\mu} = \min_{\nu} v_{\mu,\nu}
+\end{align}
+is the fixed point of $T_\mu$, and it is well known that any policy $\nu_+$ for MIN such that $T_{\mu,\nu_+}v_\mu = T_\mu v_\mu = v_\mu$ is optimal.
+Symmetrically, given any policy $\nu$ for MIN, the maximal value that MAX can obtain
+\begin{align}
+  \tilde v_{\mu} = \max_{\nu} v_{\mu,\nu}
+\end{align}
+is the fixed point of $\tilde T_\nu$, and it is well known that any policy $\mu_+$ for MAX such that $T_{\mu_+,\nu}v_\mu = \tilde T_\nu \tilde v_\nu = \tilde v_\nu$ is optimal.
+The optimal discounted payoff
+\begin{align}
+  v_* = \max_{\mu} \min_{\nu} v_{\mu,\nu}
+\end{align}
+is the fixed point of $T$. Let $(\mu_*,\nu_*)$ be any pair of positional strategies such that $T_{\mu_*,\nu_*}v_*=T v_*$. It is well-known that $(\mu_*,\nu_*)$ is optimal.
+
+
+$n$-periodic policies
+
+
+Finally, min-attractor
+
+
+\section{A quasi-optimality equation that is local}
+
+The equation $v_*=T v_*$, that characterizes the optimal value of the game, is \emph{global} in the sense that it is a system of equations that involves the values of \emph{all} vertices. We shall begin by describing and prove a quasi-optimality equation that has the virtue of being \emph{local} in the sense that it involves only the value of \emph{one} vertex:
+\begin{lemma}
+  Let $v$ be any value function that satisfies $v \le Tv$.
+  If for some $x$, we have
+  \begin{align}
+    [T^n v](x) - v(x) \le \epsilon,
+  \end{align}
+  Then 
+  \begin{align}
+    v(x) \ge v_*(x) - \frac{\epsilon}{1-\gamma}.
+  \end{align}
+\end{lemma}
+\begin{proof}
+  First, observe that by the monotonicity of $T$, and since $v \le Tv$, we have
+  \begin{align}
+    v \le Tv \le T^2 v \le \dots \le T^n v.
+  \end{align}
+  Let $\vec\nu=(\nu_1,\dots,\nu_n)$ be a policy such that
+  \begin{align}
+    T^n v = \tilde T_{\vec\nu} v.
+  \end{align}
+  Assume MIN uses $\vec\nu$ to play $n$ steps against the optimal policy $\mu_*$ of MAX from $x$. Consider the $n$ vertices visited:
+  \begin{align}
+    x_0=x,~ x_1,~ x_2,~ \dots,~ x_n
+  \end{align}
+  Since there are  $n$ vertices, there necessarily exists $0 \le i < j \le n$ such that $x_i=x_j$. Let $\vec\nu_p=(\nu_1,\dots,\nu_{i-1})$, $\vec\nu_c=(\nu_i,\dots,\nu_{j-1})$ and $\vec\nu_{p'}=(\nu_j,\dots,\nu_n)$ so that $\vec\nu=\vec\nu_p \vec\nu_c \vec\nu_{p'}$.
+  
+  Now, assume that against $\mu_*$, MIN uses the non-stationary policy $\vec\nu'=\vec\nu_p(\vec\nu_c)^\infty$. The trajectory is made of a path followed by a cycle of length $j-i$ that is repeated infinitely often:
+  \begin{align}
+    \underbrace{x_0=x,~ x_1,~ x_2,~ \dots, x_{i-1}}_{\mbox{path}},~ \underbrace{x_i,~ x_{i+1},~ \dots,~ x_{j-1}}_{\mbox{cycle}},~ \underbrace{x_i,~ x_{i+1},~ \dots, x_{j-1}}_{\mbox{cycle}}, ~\dots
+  \end{align}
+  The value of this game satisfies for any $w$,
+  \begin{align}
+    v_{\mu_*,\bar\nu}(x) & = \1_x T_{\mu_*,\vec\nu_p} (T_{\mu_*,\vec\nu_c})^\infty w \\
+    & = \1_x  T_{\mu_*,\vec\nu_p} 0 + \gamma^i \1_{x_i} \sum_{k=0}^{\infty} [(T_{\mu_*,\vec\nu_c})^{k+1} w - T_{\mu_*,\vec\nu_c})^k w] + \gamma^i \1_{x_i} w \\
+    & = \1_x  T_{\mu_*,\vec\nu_p} w + \gamma^i \1_{x_i} \sum_{k=0}^{\infty} \gamma^{(j-i)k}(P_{\mu_*,\vec\nu_c})^k (T_{\mu_*,\vec\nu_c} w -  w)  \\
+    & = \1_x  T_{\mu_*,\vec\nu_p} w + \gamma^i \1_{x_i} (I-\gamma^{j-i} P_{\mu_*,\vec\nu_c})^{-1} (T_{\mu_*,\vec\nu_c} w -  w) \\
+    &=\1_x  T_{\mu_*,\vec\nu_p} w + \frac{\gamma^i \1_{x_i}}{1-\gamma^{j-i}} (T_{\mu_*,\vec\nu_c} w -  w) 
+  \end{align}
+  Take $w=T^{n-j}v$ and substract $v(x)$, we obtain:
+  \begin{align}
+    v_{\mu_*,\bar\nu}(x) - v(x) & = \1_x  (T_{\mu_*,\vec\nu_p} T^{n-j}v-v) + \frac{\gamma^i \1_{x_i}}{1-\gamma^{j-i}} (T_{\mu_*,\vec\nu_c} T^{n-i}v -  T^{n-i}v )\\
+    & \le \1_x  (\tilde T_{\vec\nu_p} T^{n-j}v - v)+ \frac{\gamma^i \1_{x_i}}{1-\gamma^{j-i}} (\tilde T_{\vec\nu_c} T^{n-j}v -  T^{n-j}v ) \\
+    & \le \1_x  (\tilde T_{\vec\nu_p} T^{n-i}v - v)+ \frac{\gamma^i \1_{x_i}}{1-\gamma^{j-i}} (\tilde T_{\vec\nu_c} T^{n-j}v -  T^{n-j}v ) \\
+    & = \1_x (T^nv - v) + \frac{\gamma^i}{1-\gamma^{j-i}}  \1_{x_i} (T^{n-i}v -  T^{n-j}v ) \\
+    & \le \1_x (T^nv - v) + \frac{\gamma^i}{1-\gamma^{j-i}}  \1_x (T^n v - v) \\
+    & \le \frac{\epsilon}{1-\gamma}.
+  \end{align}
+The result follows by the fact that $v_{\mu_*,\nu_*}(x) \le v_{\mu_*,\bar\nu}(x)$.
+\end{proof}
+
+
+
+  \section{A non-stationary Policy Iteration algorithm}
+
+  We consider the following algorithm that takes as main parameter a threshold $\epsilon$.
+
+  $\vec\mu$
+
+  \begin{lemma}
+    After at most $\frac{n(1-\gamma)(v_{\mu_*}-v_{\mu_0})}{\epsilon}$ iterations, the algorithm stops and return a policy $\mu$ such that
+    \begin{align}
+      v_{\mu_*} - v_{\mu} \le n R + \frac{\epsilon}{1-\gamma}
+    \end{align}
+  \end{lemma}
+
+  If one chooses $\gamma$ sufficiently high and $\epsilon$ sufficiently small of order $\frac{1}{n^2}$
+
+  By Zwick we know that
+  \begin{align}
+   \| g_{\mu_*} - (1-\gamma) v_{\mu_*}^\gamma \| \le 2n(1-\gamma)R.
+  \end{align}
+  Therefore
+  \begin{align}
+  \| g_{\mu_*} - (1-\gamma) v^{(\gamma)}_{\mu} \| \le 3n(1-\gamma)R + \epsilon.
+  \end{align}
+  If we choose $\gamma=1-\frac{1}{12n^3 R}$ and $\epsilon=\frac{1}{Rn^2}$, we get
+  \begin{align}
+    \| g_{\mu_*} - (1-\gamma) v^{(\gamma)}_{\mu} \| \le \frac{1}{2n^2}.
+  \end{align}
+  and we can thus deduce the value $g_{\mu_*}$.
+  
+  \section{A scaling variant}
+
+  
+  
+
+  \begin{theorem}
+    The total number of iterations of the Policy Iteration algorithm is bounded by $n^3 \log R$.
+  \end{theorem}
+  
+ 
+
+
+
+\bibliographystyle{plain}
+\bibliography{biblio}
+
+
+\end{document}
+
+

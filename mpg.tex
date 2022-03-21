@@ -1,0 +1,128 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+
+
+\title{A polynomial algorithm for deterministic mean-payoff games}
+
+\author{Bruno Scherrer\footnote{INRIA, bruno.scherrer@inria.fr}}
+
+
+\def\1{{\mathds 1}}
+\def\N{\mathbb N}
+\def\R{\mathbb R}
+\def\={\stackrel{def}{=}}
+\def\Xmax{X_{+}}
+\def\Xmin{X_{-}}
+\newcommand{\suc}[1]{f(#1)}
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  We describe a polynomial algorithm for solving deterministic mean payoff games. Our algorithm solves a mean payoff game with $n$ vertices and integer edge-costs between $-W$ and $W$ in time ... This in particular implies that a parity game with $n$ vertices and $d$ priorities can be solved in time .... This answers positively the long-standing open problem whether these problems are in $P$.
+\end{abstract}
+
+
+
+Consider a mean payoff game played by two players, MAX and MIN, on a graph with $n$ vertices $X=\{1,2,\dots,n\}=\Xmax \sqcup \Xmin$ and directed edges $E$. For any vertex $x$, we write $\suc{x}=\{y;(x,y) \in E\}$ the set of vertices that can be reached from $x$ by following one edge. An integer cost $-R \le r(x) \le R$ is associated to each node $x$. The vertices of $\Xmax$ (resp. $\Xmin$) belong to MAX (resp. MIN). The game starts in some vertex $x_0$. The player who owns the current vertex chooses a next vertex by following an edge. So on and so forth, these choices generate an infinitely long trajectory $(x_0,x_1,\dots)$. The goal of MAX is to maximize
+\begin{align}
+\lim\inf_{T \to \infty} \frac 1 T \sum_{t=0}^{T}  r(x_t),
+\end{align}
+while that of MIN is to minimize
+\begin{align}
+\lim\sup_{T \to \infty} \frac 1 T \sum_{t=0}^{T}  r(x_t).
+\end{align}
+
+A practical way to work on mean payoff games is to consider their $\gamma$-discounted variant for some $0\le \gamma<1$, that only differs by the objective. In such a game, MAX tries to maximize the value
+\begin{align}
+\sum_{t=0}^{\infty} \gamma^t r(x_t)
+\end{align}
+while MIN tries to minimize it.
+For any pair of positional strategies $\mu:\Xmax \to X$ for MAX and $\nu:\Xmin$ for MIN (mappings such that for all $x$, $\mu(x) \in f(x)$ and $\nu(x) \in f(x)$), let us write $P_{\mu,\nu}$ for the transition matrix: for all $(i,j) \in \{1,2,\dots,n\}^2$, $P_{\mu,\nu}(i,j)$ equals $1$ if and only if $(\mu,\nu)$ induce a transition $i \to j$ and $0$ else. Let us introduce the following Bellman operators:
+\begin{align}
+  T_{\mu,\nu}v &= g + \gamma P_{\mu,\nu}v, \\
+  T_{\mu}v & = \min_\nu T_{\mu,\nu}v, \\
+  T v &= \max_\mu T_{\mu}v,
+\end{align}
+that are all $\gamma$-contraction with respect to the max norm.
+The discounted value $v_{\mu,\nu}$ when MAX and MIN respectively use $\mu$ and $\nu$ satisfies
+\begin{align}
+  v_{\mu,\nu} = \sum_{t=0}^{\infty} (\gamma P_{\mu,\nu})^t r = (I-\gamma P_{\mu,\nu})^{-1} r
+\end{align}
+and is the fixed point of $T_{\mu,\nu}$. The optimal value $v_*$ is the fixed point of $T$, and any pair of positional strategies $\mu_*,\nu_*$ that satisfy $T_{\mu_*,\nu_*}v_*= T v_* = v_*$ are known to be optimal \cite{puterman}.
+
+In Section~\ref{algo}, we shall describe and analyse an algorithm for computing optimal cycles in $\gamma$-discounted payoff. In Section~\ref{scaling}, we shall describe a scaling approach that allows to reduce the complexity dependency of the first algorithm with respect to $W$ from $W$ to $\log W$. Finally, in Section~\ref{mpg}, we will explain that this approach allows to solve the Mean Payoff game in polynomial time if one chooses $\gamma$ sufficiently close to $1$.
+
+
+
+\section{An algorithm to compute optimal cycles}
+\label{algo}
+
+We consider the following iterative algorithm:
+\begin{enumerate}
+\item (Initialization) Set $k=0$ and take an arbitrary policy $\mu_0$ for MAX.
+\item (Evaluation) Compute the value $v_k$ and an optimal counter-policy $\nu_k$ of MIN in the 1-player problem  where MAX uses $\mu_k$:
+  \begin{align}
+    v_k = T v_k = T_{\mu_k} v_k = T_{\mu_k,\nu_k} v_k
+  \end{align}
+\item (Computation of the $n$-step advantage) Compute the advantage $\delta_n$ and a pair of $n$-horizon strategies $(\mu_k^{(n)},\dots,\mu_k^{(1)})$ and $(\nu_k^{(n)},\dots,\nu_k^{(1)})$ such that:
+  \begin{align}
+    \delta_k = T^n v_k - v_k = T_{\mu_k^{(n)},\nu_k^{(n)}} T_{\mu_k^{(n-1)},\nu_k^{(n-1)}} \dots  T_{\mu_k^{(1)},\nu_k^{(1)}}v_k - v_k.
+  \end{align}
+\item (Identification of converged nodes) Compute the set
+  \begin{align}
+    Z_k = \{ x \in X ~;~ \delta_k(x)=0 \}.
+  \end{align}
+  If $Z_k \neq \emptyset$: 1) remove the nodes of the MIN-attractor $A_k$ set of $Z_k$ from the game (along with the transitions that go to $A_k$).  If the game still has nodes, increment $k$ by $1$ and go to step 2 (otherwise stop). 
+\item (Computation of a stationary policy) Compute the values $w_k^{(n)},\dots,w_k^{(1)}$ in the 1-player problems for MIN where $MAX$ uses the $n$-periodic strategies $\sigma_k^{(n)} = (\mu_k^{(n)},\dots,\mu_k^{(1)})$, $\sigma_k^{(n-1)} = (\mu_k^{(n-1)},\dots,\mu_k^{(1)},\mu_k^{(n)})$, $\dots$, $\sigma_k^{(1)}=(\mu_k^{(1)},\mu_k^{(n)},\dots,\mu_k^{(2)})$:
+  \begin{align}
+    w_k^{(n)} &= T_{\mu_k^{(n)}} \dots T_{\mu_k^{(1)}} w_k^{(n)}, \\
+    w_k^{(n-1)} &= T_{\mu_k^{(n-1)}} \dots T_{\mu_k^{(1)}} T_{\mu_k^{(n)}} w_k^{(n-1)}, \\
+    \vdots ~~~~ & ~~~~~~~~~~~~~~~~~~~ \vdots \\
+    w_k^{(1)} &= T_{\mu_k^{(1)}} T_{\mu_k^{(n)}} \dots T_{\mu_k^{(2)}}  w_k^{(1)}.
+  \end{align}
+  Compute the pointwise maximum $w_k=\max_{i}w_k{(i)}$, and 
+  identify a policy $\mu_{k+1}$ that satisfies:
+  \begin{align}
+    T_{\mu_k} w_k = T w_k
+  \end{align}
+  Increment $k$ by $1$ and go to step 2.
+\end{enumerate}
+
+\section{A scaling approach}
+\label{scaling}
+
+\section{Application to the Mean Payoff game}
+\label{mpg}
+
+\section{Conclusion}
+
+We have shown that the problem ``Mean Payoff Game'' is in $P$. To our knowledge, this problem was only previously known to be in $NP \cap co-NP$ \cite{zwick}.
+
+It was shown in \cite{puri} that any parity game (a game that is central to $\mu$-calculus model checking) on a graph with $n$ vertices and $d$ priorities can be reduced to a mean payoff game on the same graph with edge costs bounded in absolute value by $W=n^d$. As a consequence, Theorem~\ref{thmpg} implies that:
+\begin{theorem}
+A parity game with $n$ vertices and $d$ priorities can be solved in time ...
+\end{theorem}
+Though ``Parity Game'' was long thought to be in $NP \cap co-NP$ and has recently be shown to be quasi-polynomial \cite{calude}, it is in fact in $P$.
+
+
+
+%\paragraph{Acknowledgements} 
+
+\bibliographystyle{plain}
+\bibliography{biblio.bib} 
+
+\end{document}

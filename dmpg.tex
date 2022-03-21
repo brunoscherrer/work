@@ -1,0 +1,78 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+\usepackage{stmaryrd}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{corollary}{Corollary}
+
+
+\title{A polynomial algorithm for the deterministic mean payoff game}
+
+\author{Bruno Scherrer}
+\def\R{\mathds R}
+\def\1{{\mathds 1}}
+\def\Y{{\cal Y}}
+\def\M{{\cal M}}
+\def\N{{\cal N}}
+\def\G{{\cal G}}
+\newcommand{\suc}[1]{f(#1)}
+
+\def\={\stackrel{def}{=}}
+\newcommand{\intset}[1]{\llbracket #1 \rrbracket}
+\newcommand{\intpart}[1]{\lceil #1 \rceil}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  We describe an algorithm that solves a deterministic $\gamma$-discounted payoff game with $n$ states and $m$ transitions in time $O(n^4 m)$ (independently of $\gamma$ and the range of the costs values), i.e. that is strongly polynomial. The core of this algorithm amounts to look for a policy in the space of variable-length non-stationary policies rather than stationary policies ; we show that it is indeed more adequate for tackling the cyclic nature of the dynamics of the game. This implies that mean payoff games can be solved with the same time. This also shows that parity games can be solved in polynomial time $O(n^4 m)$.
+\end{abstract}
+  
+
+
+Two players, MAX and MIN, play a deterministic game on an arena ${\cal G}=(X=[1,n]=X_+ \sqcup X_-,E=[1,m],r)$.
+The state space $X$ of size $n$ is partitioned into states  controlled by Max
+$(X_+)$ and those controlled by Mina
+($X_-$), with a set of $m$ transitions (or edges) $E$ and a reward function $r:X \to \R$.
+On infinite trajectories induced by the choices of next-states from states that they control, MAX wants to maximise the $\gamma$-discounted sum (with $0<\gamma<1$) of rewards while MIN wants to minimise it.
+
+For any pair of positional strategies (or policies) $\mu:X_+ \to X$ and $\nu:X_- \to X$, we write $P_{\mu,\nu}$ for the transition matrix:
+  for all $(i,j)\in [1,n]^2, P_{\mu,\nu}(i,j)$ equals $1$ if $\mu,\nu$ induces a transition $i \to j$ and $0$ else.
+
+Seeing functions $v:X \to \R$ as vectors of $\R^n$, define the following Bellman operators
+\begin{align}
+T_{\mu,\nu}v & \= r + \gamma P_{\mu,\nu}v, \\
+T v & \=\max_\mu \min_\nu T_{\mu,\nu }v,
+\end{align}
+that are $\gamma$-contractions with respect to the max-norm.
+For all pair of policies $(\mu,\nu)$, the discounted payoff is defined as
+\begin{align}
+v_{\mu,\nu}(x) \= \sum_{t=0}^\infty (\gamma P_{\mu,\nu})^t g = (I-\gamma P_{\mu,\nu})^{-1}g
+\end{align}
+and is the only fixed point of $T_{\mu,\nu}$.
+The optimal discounted payoff is
+\begin{align}
+  v_* \= \max_{\mu} \min_{\nu} v_{\mu,\nu}
+\end{align}
+and is the only fixed point of  $T$.
+Let $(\mu_*,\nu_*)$ be a pair of positional strategies such that $T_{\mu_*,\nu_*}v_*=T v_*$. It is well-known that $(\mu_*,\nu_*)$ is optimal.
+
+
+
+\bibliographystyle{plain}
+\bibliography{biblio}
+
+
+\end{document}
+
+
