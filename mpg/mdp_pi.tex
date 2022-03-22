@@ -1,0 +1,76 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+\usepackage{stmaryrd}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{corollary}{Corollary}
+
+
+\title{A PI algorithm for deterministic MDPs}
+
+\author{Bruno Scherrer}
+\def\R{\mathds R}
+\def\1{{\mathds 1}}
+
+\newcommand{\intset}[1]{\llbracket #1 \rrbracket}
+\newcommand{\intpart}[1]{\lceil #1 \rceil}
+
+\begin{document}
+\maketitle
+
+\section{variable step}
+
+For any policy $\pi$ such that $\1_x (P_{\pi})^c = \1_x$, then
+\begin{align}
+  v_{\pi}(x) - v(x) & = \1_x (I-(\gamma P_\pi)^c)^{-1} ((T_{\pi})^c v - v) \\
+  & \le \frac{\1_x}{1-\gamma^c} (T^c v - v).
+\end{align}
+Therefore, if we find a set of policies such that
+\begin{align}
+  T_{\pi_1}\dots T_{\pi_c} v = T^c v,\\
+  \1_x P_{\pi_1} \dots P_{\pi_c} = \1_x,
+\end{align}
+then with $\vec\pi=\pi_1 \dots \pi_n$,
+\begin{align}
+  v_{\vec\pi} (x) \ge v_{\pi}(x).
+\end{align}
+So in $n^2$ iterations, we can find the optimal policy of a deterministic MDP.
+
+\section{$n$-step}
+
+$\mu_*$ against $\vec\nu$ enters a cycle in some state $y$ after $p$ steps. Let $\vec\nu_c$ be the subpart of $\vec\nu$ involved. Therefore:
+\begin{align}
+  v_{\mu_*}(y)-v(y) &= v_{\mu_*,\vec\nu_c}(y) - v(y) \\
+  & = \frac{\1_y}{1-\gamma^c}(T_{\mu_*,\vec\nu_c}v - v) \\
+  & \le \frac{\1_y}{1-\gamma^c}(T^c v - v) \\
+  & \le \frac{\1_y}{1-\gamma^c}(T^n v - v).
+\end{align}
+If $\1_y(T^n v - v) = 0$, and $y$ appears on cycle of the play $(\mu_*,\vec\nu)$, then $v_{\mu_*}(y)=T^n v(y)$.
+
+If $v$ is not optimal on cycles, then there exits $y$ that appears on a cycle in the play $(\mu_*,\vec\nu_c)$ and such that $\1_y(T^n v - v)>0$.
+
+
+Suppose I try to improve some policy with value $v$.
+\begin{align}
+  v_{\vec\mu'} - v & = \min_{\vec\nu'} v_{\vec\mu',\vec\nu'}-v \\
+  & = \min_{\vec\nu'}(I-\gamma^n P_{\vec\mu',\vec\nu'})^{-1}(T_{\vec\mu',\vec\nu'}v - v) \\
+  & \ge \min_{\vec\nu'}(I-\gamma^n P_{\vec\mu',\vec\nu'})^{-1}(T^n v - v)
+\end{align}
+
+\bibliographystyle{plain}
+\bibliography{biblio}
+
+
+\end{document}
+
+
