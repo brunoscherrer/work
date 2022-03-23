@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{assumption}{Assumption}
+
+
+
+\def\1{{\mathds 1}}
+\def\N{\mathbb N}
+\def\R{\mathbb R}
+\def\={\stackrel{def}{=}}
+\def\Xmax{X_{+}}
+\def\Xmin{X_{-}}
+\newcommand{\attr}[2]{\mbox{Attr}_{#1}(#2)}
+
+
+\begin{document}
+
+\section{Threshold procedure}
+
+We consider here the following situation:
+\begin{assumption}
+  \label{sp}
+    Both players can make sure that the parities by which games are won are smaller than $p$.
+\end{assumption}
+  
+Let $i \equiv p \pmod{2}$ be the player that can win a game with parity $p$.
+We want to compute the set $W_i$ for which Player $i$ can win with parity $p$ and its complementary $W_{1-i}$ for which he cannot (i.e. for which Player $1-i$ can force Player $i$ to get a parity stricly smaller than $p$).
+
+For $j \in \{0,1\}$, consider the following set of vertices:
+\begin{align}
+  H_j &= \{~ x ~;~ p(x)>p\mbox{ and }p(x) \equiv j \pmod{2} ~\}, \\
+  H & = H_i \sqcup H_j = \{~ x ~;~ p(x)> p ~\}.
+\end{align}
+
+We shall consider the game $G'$ on the set of vertices $V \backslash ( \attr{G,0}{H_0} \cup \attr{G,1}{H_1} )$. $G'$ only contains 2 differents parities, so we can solve it efficiently by Puri's reduction and determine optimal cycles that are won by both players, and deduce (through the attractor) the full winning regions.
+
+Explain why this makes sense... if it does?
+
+\end{document}
