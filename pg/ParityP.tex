@@ -1,0 +1,115 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+\usepackage{stmaryrd}
+\usepackage{natbib}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{corollary}{Corollary}
+
+\title{Parity is in P ?}
+
+\author{Bruno Scherrer}
+\def\C{{\cal C}}
+\def\P{{\cal P}}
+\def\G{{\cal G}}
+\def\R{\mathds R}
+\def\N{\mathds N}
+\def\1{{\mathds 1}}
+\def\={\stackrel{def}{=}}
+\newcommand{\intset}[1]{\llbracket #1 \rrbracket}
+\newcommand{\intpart}[1]{\lceil #1 \rceil}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+%We show how to solve a parity game with $n$ nodes and $m$ edges with at most $(2n+1)n$ steps of Value Iteration through Puri's reduction to its equivalent mean-payoff game. This shows that Parity game can be solved in time $(2n+1)nm$, and answers positively the long-standing question whether the parity problem can be solved in polynomial time.  
+\end{abstract}
+
+%~\\
+%\paragraph{Disclaimer from the author:} This short note is an unreviewed argument for a long-standing open problem, mainly devoted to be shared with the academic community. In its current form, it lacks the necessary review of the rich literature. I also hope it does not contain any critical crack.
+%~\\
+
+Given an arena $\G=(V=[1,n]=V_1 \sqcup V_2,E=[1,m],\Omega)$ with $(n,m) \in \N^2$, a \emph{parity game} is a game played by two players, Odd and Even.
+$(V,E)$ is a graph without any dead ends: $V$ is a set of $n$ nodes and $E$ a set of $m$ directed edges such that each node has a least one outgoing edge. 
+The set of nodes  $V$ is partitioned into a set of states $V_1$ belonging to Odd and a set of nodes $V_2$ belonging to Even. $\Omega:X \to [1,d]$, known as a priority function, assigns an integer label to each node of the graph.
+A play is an infinitely long trajectory $(v_0,v_1,\dots)$ generated from some starting state $v_0$: at any time step $t$, the player to which the node $v_t$ chooses $v_{t+1}$ among the adjacent nodes from $v_t$ (following any of the outgoing edges of $E$ starting from $v_t$). The winner of the game is decided from the infinte sequence of priorities $(\Omega(v_0),\Omega(v_1),\dots$ occuring through the play: if the highest priority occurring infinitely often is odd, then Odd wins. Otherwise (if it is even), Even wins. 
+
+A \emph{mean-payoff game} is a game played by two players, Max and Min, on a arena $\G=(V=[1,n]=V_1 \sqcup V_2, E=[1,m],w)$ similar to that of a parity game ; the only difference is that the priority function is replaced by a cost function $w:X \to [-W,W]$ where $W \in \N$. The dynamics of the game is the same as above. On potential plays $(v_0,v_1,\dots)$ induced by the players' choices, Max wants to maximize $\liminf_{t \to \infty}\frac{1}{t} \sum_{i=1}^t w(v_i)$ while Min wants to minimize $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=1}^t g(v_i)$. \citet{ehrenfeucht79} have shown that for each starting node $v_0$,  such a game has a value $\nu(v_0)$, the optimal mean-payoff from $v_0$, such Max has a strategy to ensure that $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=0}^t w(v_i) \ge \nu(v_0)$ and Min has a strategy to ensure that $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=0}^t g(v_i) \le \nu(v_0)$.
+
+For both games, it is known (cf. \citet{zielonka98} and \citet{ehrenfeucht79}) that there exist optimal strategies that are positional (i.e. that are mapping from nodes to outgoing edges). In particular, when both players follow these positional strategies from some state $v_0$, the play follows a (potentially empty) path followed by an infinitely-repeated cycle with optimal maximum parity of optimal mean payoff, in other words an optimal cycle $(v^*_1,\dots,v^*_c)$.
+
+\paragraph{Puri's reduction}
+
+As shown by \citet{puri96}, any parity game $\G=(V=[1,n]=V_1 \sqcup V_2,E=[1,m],\Omega)$ can be reduced to a mean-payoff game $\G'=(V=[1,n]=V_1 \sqcup V_2,E=[1,m],w)$, by choosing the weight function as follows
+\begin{align}
+  \forall v,~~~ w(v) = (-K)^{\Omega(v)},
+\end{align}
+for some sufficiently big integer.
+Indeed, consider an optimal cycle $(v^*_1,\dots,v^*_c)$ (using the above-mentionned positional strategies) with maximal parity $\Omega^*$. If $\Omega^*$ is even then, by choosing $K=n$, we have
+\begin{align}
+ 0 <  K^{\Omega^*} - (n-1) K^{\Omega^*-1} \le  \sum_{i=1}^{c} (-K)^{\Omega^*(v^*_i)} \le n K^{\Omega^*}.
+\end{align}
+If $\Omega^*$ is odd, we similarly have:
+\begin{align}
+0 > -K^{\Omega^*} + (n-1) K^{\Omega^*-1} \ge   \sum_{i=1}^{c} (-K)^{\Omega^*(v^*_i)} \ge -n K^{\Omega^*}.
+\end{align}
+In other words, from any starting node $v_0$, Even (resp. Odd) wins the parity game if the value of the mean-payoff game $\nu(v_0)$ is positive (resp. negative). Furthermore, an optimal pair of strategies for the mean-payoff game is optimal in the parity game.
+
+\paragraph{Main result}
+
+Consider a starting state $v_0$. Suppose that the optimal parity is $\Omega_*$. Without loss of generality, let us assume that $\Omega_*$ is even.
+
+Consider the solution to the $k$-horizon problem and the trajectory $(v_0,v_1,\dots,v_k)$ obtained from a starting state $v_0$. The optimal value is
+\begin{align}
+\nu_k(v_0) = \sum_{i=0}^{k} (-K)^{\Omega(v_i)}.
+\end{align}
+Let us partition the time indices of this trajectory depending on whether their priority is bigger than $\Omega_*$:
+\begin{align}
+  A &= \{ 1 \le i \le k ~;~ \Omega(v_i) \le \Omega^* \} \\
+  B_E & = \{ 1 \le i \le k ~;~ \Omega(v_i) > \Omega^* \mbox{ and } \Omega(v_i) \mbox{ is even} \} \\
+  B_O & = \{ 1 \le i \le k ~;~ \Omega(v_i) > \Omega^* \mbox{ and } \Omega(v_i) \mbox{ is odd} \}
+\end{align}
+We have
+\begin{align}
+\nu_k(v_0) = \sum_{i \in A} (-K)^{\Omega(v_i)} + \sum_{i \in B_E} K^{\Omega(v_i)} - \sum_{i \in B_O} K^{\Omega(v_i)} .
+\end{align}
+%Therefore, we have the following bound depending on the size $|B|$ of the set $B$:
+%\begin{align}
+% \sum_{i \in A} (-K)^{\Omega(v_i)} - |B| K^d \le \nu_k(v_0) \le \sum_{i \in A} (-K)^{\Omega(v_i)} + |B| K^d.
+%\end{align}
+
+We shall use the following result.
+\begin{lemma}[\citet{zwick96}, Theorem 2.2]
+  There exists two sets of nodes $\{u_1,u_2,\dots,u_{l}\}$ and $\{u'_1,u'_2,\dots,u'_{l'}\}$ with $l \le n$ and $l'\le n$ such that
+  \begin{align}
+    (k-l)\nu(v_0) - \sum_{i=1}^{l} w(u_i) \le \nu_k(v_0)  \le (k-l')\nu(v_0) + \sum_{i=1}^{l'} w(u'_i).
+  \end{align}
+\end{lemma}
+Therefore, we have
+\begin{align}
+    (k-n)\nu(v_0) - n K^d \le \nu_k(v_0) \le (k-n)\nu(v_0) + n K^{d}.
+\end{align}
+
+The inequality above implies that the maximal number of times priorities that are strictly lower (resp. bigger) than $\Omega^*$ appear in the $k$-horizon optimal path is bounded by $l$ (resp. $l'$), thus by $n$. In other words the number
+Therefore, if we choose $k$ such that at least one priority appears at least $n+1$ times, then we know that this parity is necessarily equal to $\Omega^*$. It is easy to see that it is sufficient to choose $k=(n+1)n$. 
+
+
+
+\bibliographystyle{plainnat}
+\bibliography{biblio}
+
+
+\end{document}
+
+

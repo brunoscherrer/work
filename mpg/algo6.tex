@@ -1,0 +1,83 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+\usepackage{stmaryrd}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{corollary}{Corollary}
+
+
+
+\author{Bruno Scherrer}
+\def\R{\mathds R}
+\def\1{{\mathds 1}}
+
+\newcommand{\intset}[1]{\llbracket #1 \rrbracket}
+\newcommand{\intpart}[1]{\lceil #1 \rceil}
+
+\begin{document}
+
+For any policy $\vec\mu=\mu_1,\dots,\mu_n$, for any state $x$ and any stationary adversary policy $\nu$, there exists a decomposition:
+\begin{align}
+\vec\mu = \vec\mu_P \vec\mu_C \vec\mu_{P'}
+\end{align}
+such that
+\begin{align}
+  \1_x P_{\vec\mu_P,\nu} = \1_x P_{\vec\mu_P,\nu} P_{\vec\mu_C,\nu} = \1_y(\vec\mu,x,\nu)
+\end{align}
+If we consider the policy $\tilde \mu(\vec\mu,x,\nu) = \mu_P (\mu_C)^\infty$, then for any $w$,
+\begin{align}
+  v_{\tilde\mu(\vec\mu,x,\nu),\nu}(x) - T_{\vec\mu_P,\nu}T_{\vec\mu_C,\nu} w(x) &= \1_x[  T_{\vec\mu_P,\nu} (T_{\vec\mu_C,\nu})^{\infty}w  - T_{\vec\mu_P,\nu}T_{\vec\mu_C,\nu} w] \\
+  & = \sum_{k=1}^\infty \1_x T_{\vec\mu_P,\nu} (T_{\vec\mu_C,\nu})^{k+1} w - \1_x T_{\vec\mu_P,\nu} (T_{\vec\mu_C,\nu})^{k} w \\
+  & =  \sum_{k=1}^\infty \1_x \Gamma_{\vec\mu_P,\nu} (\Gamma_{\vec\mu_C,\nu})^k (T_{\vec\mu_C,\nu} w - w) \\
+  & = \frac{\gamma^{i+c}}{1-\gamma^c} \1_{y(\vec\mu,x,\nu)}  (T_{\vec\mu_C,\nu} w - w).
+\end{align}
+Therefore by taking $w=T_{\vec\mu_{P'},\nu} v$, we get for any $v$, 
+\begin{align}
+  v_{\tilde\mu(\vec\mu,x,\nu),\nu}(x) - T_{\vec\mu,\nu} v(x) = \frac{\gamma^{i+c}}{1-\gamma^c} \1_{y(\vec\mu,x,\nu)}  (T_{\vec\mu_C,\nu}T_{\vec\mu_{P'},\nu} v  - T_{\vec\mu_{P'},\nu} v).
+\end{align}
+
+Symmetrically we have for any policy $\vec\nu=\nu_1 \dots \nu_n$, any state $x$ and any stationary adversary policy $\mu$, 
+\begin{align}
+ v_{\mu,\tilde\nu(\vec\nu,x,\mu)}(x) - T_{\mu,\vec\nu} v(x) = \frac{\gamma^{j+d}}{1-\gamma^d} \1_{z(\vec\nu,x,\mu)}  (T_{\mu,\vec\nu_C}T_{\mu,\vec\nu_{P'}} v  - T_{\mu,\vec\nu_{P'}} v).
+\end{align}
+
+Assume $v \ge Tv$ and
+\begin{align}
+  T_{\mu_1,\nu_1} \dots T_{\mu_n,\nu_n}v = T_{\vec\mu,\vec\nu}v = T^n v. 
+\end{align}
+On the one hand, we have
+\begin{align}
+  v_{\mu_*,\nu_*}(x)-T^n v(x) &\le v_{\mu_*,\tilde\nu(\vec\nu,x,\mu_*)}(x)-T^n v(x) \\
+  & = \frac{\gamma^{j+d}}{1-\gamma^d} \1_{z(\vec\nu,x,\mu_*)}  (T_{\mu_*,\vec\nu_C}T_{\mu_*,\vec\nu_{P'}} v  - T_{\mu_*,\vec\nu_{P'}} v) \\
+  & \le \frac{\gamma^{j+d}}{1-\gamma^d} \1_{z(\vec\nu,x,\mu_*)}  (T^{n-j-d}v -T^{n-j}v).
+\end{align}
+From $z$ such that $T^{n-j-d}v -T^{n-j}v \le \rho$, can we do $\vec\nu_C$ and then force any policy $\mu_*$ to revisit $z$ ? If yes, then we have a bound on $v_*$.
+
+
+On the other hand, we have for all $\bar\nu$;
+\begin{align}
+  v_{\tilde\mu(\vec\mu,x,\bar\nu)}(x) - T^n v(x) & = \frac{\gamma^{i+c}}{1-\gamma^c} \1_{y(\vec\mu,x,\bar\nu)}  (T_{\vec\mu_C,\bar\nu}T_{\vec\mu_{P'},\bar\nu} v  - T_{\vec\mu_{P'},\bar\nu} v) \\
+  & \ge  \frac{\gamma^{i+c}}{1-\gamma^c} \1_{y(\vec\mu,x,\bar\nu)}  (T^{n-i-c}v - T^{n-i}v).
+\end{align}
+From $y$, such that $T^{n-j-d}v -T^{n-j}v > \rho$, can we do $\vec\mu_C$ and then force any policy $\bar\nu$ to revisit $y$ ? If yes, then we make a significant improvement.
+
+
+
+
+\bibliographystyle{plain}
+\bibliography{biblio}
+
+
+\end{document}
+
+
