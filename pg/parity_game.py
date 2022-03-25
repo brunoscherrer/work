@@ -151,14 +151,12 @@ class parity_game:
             A = g.attractor(i, U)
             
             if A==all_states:
-                for k in all_states:
-                    W[i].add(k)
+                W[i] = W[i].union(all_states)
                 return W
             
             B = all_states.difference(A)
             C = g.attractor(1-i,B)
-            for k in C:
-                W[1-i].add(k)
+            W[1-i] = W[1-i].union(C)
             g = g.copy_and_remove(C)
                 
 
@@ -183,7 +181,7 @@ class parity_game:
                 i = p%2
             
                 W1 = g.solve_2v(p)
-            
+                
                 if verbose:
                     print("States winning with priority",p,":",W1[i])
 
@@ -208,7 +206,7 @@ class parity_game:
     
 # Main: test the algorithm vs Zielonka
 
-n=5
+n=3
 a=2
 d=n
 
@@ -224,7 +222,7 @@ for i in range(0,10000):
     W = g.solve_zielonka()
     print("Solution (Zielonka):",W,"\n")
     
-    W2 = g.solve(1)
+    W2 = g.solve(verbose=True)
     print("Solution:",W2,"\n\n")
     
     if W!=W2:
