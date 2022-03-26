@@ -16,7 +16,7 @@
 \newtheorem{corollary}{Corollary}
 
 
-\title{A strongly polynomial algorithm for payoff games}
+\title{A non-stationary PI algorithm}
 
 \author{Bruno Scherrer}
 \def\R{\mathds R}
@@ -40,23 +40,27 @@ Solve the $n$-horizon problem
 
 
 \begin{lemma}
-  For any policy $\mu$, for any $x$, there exist $y$, $v \le i < i+c \le n$, such that
+  For any policy $\mu$, there exist $x$, $v \le i < i+c \le n$, such that
   \begin{align}
-    v_{\mu}(x) - T^{n} v \le \frac{\gamma^{i+c}}{1-\gamma^c} \1_y (T^{n-i} v - T^{n-i-c} v).
+    v_{\mu}(x) - v(x) \le \frac{\gamma^{i+c}}{1-\gamma^c} \1_x (T^{n-i} v - T^{n-i-c} v).
   \end{align}
 \end{lemma}
 \begin{proof}
-$\mu_*$ play against $\vec\nu$. Once a cycle is found, one loops.
+$\mu_*$ play against $\vec\nu$. Once a cycle is found involving $x$, one loops.
 \end{proof}
 
 \begin{align}
-  M_{x,y,i,c} = \{ \mu ~;~ \}
+  M_{x,c} = \{ \mu ~;~ \exists \vec\nu,x,c,~ \1_x P_{\mu^c,\vec\nu} = \1_x \}.
+\end{align}
+Let
+\begin{align}
+  v_{x,c} = \max_{\mu \in M_{x,c}} v_\mu(x)
 \end{align}
 
 \begin{lemma}
-  For any policy $\nu$, for any $x$, there exist $y$,  $v \le i < i+c \le n$, such that
+  For any policy $\nu$, there exist $x$,  $v \le i < i+c \le n$, such that
   \begin{align}
-    v_{\vec\mu_1^i(\vec\mu_{i+1}^{i+c})^\infty,\nu^\infty}(x) - T^{n} v \ge \frac{\gamma^i}{1-\gamma^c} \1_y (T^{n-i} v - T^{n-i-c} v).
+    v_{\vec\mu_1^i(\vec\mu_{i+1}^{i+c})^\infty,\nu^\infty}(x) -v(x) \ge \frac{\gamma^{i+c}}{1-\gamma^c} \1_x (T^{n-i} v - T^{n-i-c} v).
   \end{align}
 \end{lemma}
 \begin{proof}
@@ -65,8 +69,29 @@ $\mu_*$ play against $\vec\nu$. Once a cycle is found, one loops.
 
 Algorithm: compute a policy $\mu'$ that is better than $(\vec\mu_{i+1}^{i+c})^\infty$ for all $i$ and $c$. From any $x$, $\mu'$ will end up cycling in $y$.
 
-Warm-up: write the proof for the 1-player problem.
+Can we guarantee that one makes significant progress ?
 
+
+
+\section{The 1-player case}
+
+\begin{align}
+M_{x,c} = \{ \pi ~;~ \exists x,c,~ \1_x (P_{\pi_*})^c=\1_x \}
+\end{align}
+
+Let
+\begin{align}
+  T_{\vec\pi}v = T^n v
+\end{align}
+
+Find $x,i,c$ such that $\1_x (T^{n-i}v - T^{n-i-c}v)>0$.
+Then consider the next policy as $\vec\pi'=\vec\pi_{i+1}^{i+c}$.
+We have
+\begin{align}
+  v_{\vec\pi'}(x)-T^nv(x) \ge v_{x,c}
+\end{align}
+By monotonicity we get $n^2$ iterations.
+  
 \bibliographystyle{plain}
 \bibliography{biblio}
 
