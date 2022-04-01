@@ -1,0 +1,89 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+
+
+\title{On payoff games}
+
+\author{Bruno Scherrer\footnote{INRIA, Universit\'e de Lorraine, bruno.scherrer@inria.fr}}
+
+
+\def\1{{\mathds 1}}
+\def\N{\mathbb N}
+\def\R{\mathbb R}
+\def\={\stackrel{def}{=}}
+\def\Xmax{X_{+}}
+\def\Xmin{X_{-}}
+\newcommand{\suc}[1]{E(#1)}
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  Given a zero-sum two-player $\gamma$-discounted game with $n$ states, ...
+\end{abstract}
+
+Consider a zero-sum two-player $\gamma$-discounted game with $n$ states and $m$ transitions, and its corresponding Bellman operators:
+\begin{align}
+  T_{\mu,\nu}v & = r + \gamma P_{\mu,\nu}v \\
+  T_{\mu}v & = \min_{\nu} T_{\mu,\nu}v \\
+  Tv & = \max_{\mu} T_{\mu}v.
+\end{align}
+It is well-known that the optimal value $v_*$ is the only fixed point of $T$ and that any pair of stationary policies ($\mu_*,\nu_*)$ such that $T_{\mu_*,\nu_*}v_*=v_*$ form a pair of optimal policies.
+
+\section{Facts}
+
+Let $v\ge Tv$.
+Compute
+\begin{align}
+  T^n v = T_{\vec\mu,\vec\nu}v
+\end{align}
+For any policies $\mu$ and $\nu$, there exist $x,c$ such that $1 \le c \le n$ and
+\begin{align}
+  \1_x (P_{\mu,\nu})^c = \1_x.
+\end{align}
+Writing
+\begin{align}
+  M_{x,c}(v) &= \{~ \mu ~;~ \exists \nu \in \arg\min v_{\mu,\nu}, ~\1_x (P_{\mu,\nu})^c = \1_x \}.
+\end{align}
+Note that
+\begin{align}
+  \bigcup_{x,c} M_{x,c} = M.
+\end{align}
+
+Take a $\mu \in M_{x,c}$.
+Then
+\begin{align}
+  v_\mu(x) - v(x) & = \min_\nu v_{\mu,\nu}(x) - v(x) \\
+  & = \min_{\nu \in N_{x,c}(\mu)} v_{\mu,\nu}(x) - v(x) \\
+  & = \min_{\nu \in N_{x,c}(\mu)} \1_x (I-(\gamma P_{\mu,\nu})^c)^{-1}(T_{\mu,\nu}^c v - v) \\
+  & = \min_{\nu \in N_{x,c}(\mu)} \frac{1}{1-\gamma^c}\1_x(T_{\mu,\nu}^c v - v).
+\end{align}
+
+When running $\vec\mu$ against its adversary, there exists a $x$ such that
+\begin{align}
+  v_{\vec\mu}(x) - v(x) \le  \frac{1}{n(1-\gamma)} \1_x(T^n v - v)
+\end{align}
+For all policies such $\mu_+ \in M_x(v)$,
+\begin{align}
+  v_{\mu_+}(x) - v_{\vec\mu}(x) &= v_{\mu_+}(x) - v(x) + v(x) - v_{\vec\mu}(x) \\
+  & \le (1-\frac{2}{n}) (v_{\mu_+}(x)-v(x))
+\end{align}
+
+
+\bibliographystyle{plain}
+\bibliography{biblio.bib} 
+
+\end{document}
