@@ -1,0 +1,187 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{remark}{Remark}
+
+
+\title{Towards a strongly polynomial algorithm for deterministic payoff games ?}
+
+\author{Bruno Scherrer\footnote{INRIA, Universit\'e de Lorraine, bruno.scherrer@inria.fr}}
+
+
+\def\1{{\mathds 1}}
+\def\N{\mathbb N}
+\def\R{\mathbb R}
+\def\={\stackrel{def}{=}}
+\def\Xmax{X_{+}}
+\def\Xmin{X_{-}}
+\newcommand{\suc}[1]{E(#1)}
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  Given a zero-sum two-player $\gamma$-discounted deterministic game with $n$ states, I try to build an algorithm that is polynomial on $n$ (and independent of $\gamma$). Here, I describe a contraction property that is independent of $\gamma$.
+\end{abstract}
+
+Consider a zero-sum two-player $\gamma$-discounted game with $n$ states and $m$ transitions, and its corresponding Bellman operators:
+\begin{align}
+  T_{\mu,\nu}v & = r + \gamma P_{\mu,\nu}v, \\
+  T_{\mu}v & = \min_{\nu \in N} T_{\mu,\nu}v, \\
+  \tilde T_{\nu} & = \max_{\mu \in M} T_{\mu,\nu}v, \\
+  Tv & = \max_{\mu \in M} T_{\mu}v = \min_{\nu \in N} \tilde T_{\nu}v.
+\end{align}
+It is well-known that the optimal value $v_*$ is the only fixed point of $T$ and that any pair of stationary policies ($\mu_*,\nu_*)$ such that $T_{\mu_*,\nu_*}v_*=v_*$ form a pair of optimal policies.
+
+We shall consider non-stationary policies $\vec\mu = (\mu_1,\dots,\mu_\ell) \in M^\ell$ and $\vec\nu = (\nu_1,\dots,\nu_\ell) \in N^\ell$. The operators above can be extended straightforwardly to this kind of policies:
+\begin{align}
+  P_{\vec\mu,\vec\nu} &= P_{\mu_1,\nu_1} \dots P_{\mu_\ell,\nu_\ell}, \\
+  T_{\vec\mu,\vec\nu} v &= T_{\mu_1,\nu_1} \dots T_{\mu_\ell,\nu_\ell} v, \\
+  T_{\vec\mu} v &= \min_{\vec\nu \in N^\ell} T_{\vec\mu,\vec\nu} v = T_{\mu_1} \dots T_{\mu_\ell} v, \\
+  \tilde T_{\vec\nu} v &= \max_{\vec\mu \in M^\ell} T_{\vec\mu,\vec\nu} v = \tilde T_{\nu_1} \dots \tilde T_{\mu_\ell} v, \\
+  T^\ell v & = \max_{\vec\mu \in M^\ell} T_{\vec\mu}v = \min_{\vec\nu \in N^\ell} \tilde T_{\vec\nu}v.
+\end{align}
+For any stationary policy $\mu$ or $\nu$, we shall write $\mu^\ell$ and $\nu^\ell$ for their non-stationary clones $(\mu,\mu,\dots,\mu)$ and $(\nu,\nu,\dots,\nu)$.
+
+Let
+\begin{align}
+  I = \{~ (i,j) ~; 1 \le i \le j \le n ~\}.
+\end{align}
+For any non-stationary policies $\vec\mu = (\mu_1,\dots,\mu_n) \in M^n$ and $\vec\nu =(\nu_1,\dots,\nu_n) \in N^n$, for all $(i,j) \in I$, we shall write $\vec\mu_i^j$ and $\vec\nu_i^j$ for the sub-policies:
+\begin{align}
+  \vec\mu_i^j &= \mu_i \mu_{i+1} \dots \mu_{j-1} \mu_{j}, \\
+  \vec\nu_i^j &= \nu_i \nu_{i+1} \dots \nu_{j-1} \nu_{j}.
+\end{align}
+
+Let
+\begin{align}
+  C = \{~ (x,c) ~;~ x \in X,~ 1 \le c \le n ~\}.
+\end{align}
+For all $(x,c) \in C$, consider the following sets of policies:
+\begin{align}
+  N_{x,c}(\vec\mu) & = \{~ \vec\nu \in N^c ~;~ \1_x P_{\vec\mu,\vec\nu} = \1_x \}, \\
+  M_{x,c} &= \{~ \mu ~;~ \arg\min v_{\mu,\nu} \cap N_{x,c}(\mu^c) \neq \emptyset \}.
+\end{align}
+Observe that
+\begin{align}
+  \bigcup_{(x,c) \in C} M_{x,c} = M.
+\end{align}
+For all $(x,c) \in C$, consider the following thresholds:
+\begin{align}
+  v_{x,c} = \max_{\mu \in M_{x,c}} \min_\nu v_{\mu,\nu}(x).
+\end{align}
+
+
+\paragraph{An improvement step}
+
+Assume we are given $\mu_k$. Let $v_k$ be the value of $\mu_k$ against its best adversary:
+\begin{align}
+v_k = T_{\mu_k} v_k = \min_{\vec\nu \in N^n} T_{\mu_k,\vec\nu} v_k.
+\end{align}
+We compute $\vec\mu$ and $\vec\nu \in N^n$ such that
+\begin{align}
+  T^n v = T_{\vec\mu,\vec\nu}v.
+\end{align}
+
+One can finally ``project'' the policy $\vec\mu \in M^n$ to a stationary policy $\mu_{k+1} \in M$ that is at least as good as $\vec\mu$ by choosing any policy $\mu_{k+1} \in M$ that satisfies
+\begin{align}
+T_{\mu_{k+1}} w_k = T w_k,
+\end{align}
+where
+\begin{align}
+  w_k &= \max_{1 \le \ell \le n} T_{\vec\mu_\ell^n} v_{\vec\mu}
+\end{align}
+and $v_{\vec\mu}$ is the value of $\vec\mu$ against its optimal opponent $\vec\nu'$:
+\begin{align}
+  v_{\vec\mu} &= T_{\vec\mu} v_{\vec\mu} = T_{\vec\mu,\vec\nu'} v_{\vec\mu} = v_{\vec\mu,\vec\nu'}.
+\end{align}
+
+\paragraph{Monotonicity}
+
+One can see that $v_k \le T v_k$, by monotonicity of the operator $T$, we have
+\begin{align}
+  \label{croissance}
+  T^n v_k \ge T^{n-1}v_k \ge \dots \ge T v_k  \ge v_k.
+\end{align}
+We know that $\vec\mu$ is better than $\mu_k$ since:
+\begin{align}
+  v_{\vec\mu} - v_k & =  v_{\vec\mu,\vec\nu'} - v_k \\
+  & = (I-\gamma^n P_{\vec\mu,\vec\nu'})^{-1}(T_{\vec\mu,\vec\nu'} v_k - v_k) \\
+  & = (I-\gamma^n P_{\vec\mu,\vec\nu'})^{-1}(\tilde T_{\vec\nu'} v_k - v_k) \\
+  & \ge (I-\gamma^n P_{\vec\mu,\vec\nu'})^{-1}(\underbrace{T^n v_k - v_k}_{\ge 0}) \\
+  & \ge 0.
+\end{align}
+
+\paragraph{``Strong'' contraction}
+
+There necessarily exists a state $x$ and an integer $1 \le \ell \le n$, such that
+\begin{align}
+\1_x (P_{\vec\mu,\vec\nu'})^\ell = \1_x.
+\end{align}
+Now, there necessarily exist $(i,j) \in I$ and $y$ such that:
+\begin{align}
+  \1_x P_{\vec\mu_1^{i-1},\vec\nu_1^{i-1}} = \1_x P_{\vec\mu_1^j,\vec\nu_1^j} = \1_y = \1_y P_{\vec\mu_i^j,\vec\nu_i^j}.
+\end{align}
+Let $c=j-i+1$.
+
+\begin{lemma}
+  With the notations above,
+\begin{align}
+v_{\vec\mu}(x) - v_k(x) \ge \frac{1}{n^2} (v_{y,c} - v_k(y)).
+\end{align}
+\end{lemma}
+\begin{corollary}
+  We have the following contraction towards $v_{y,c}$:
+  \begin{align}
+    v_{y,c} - v_{k+1}(x) \le \left(1 - \frac{1}{n^2} \right)(v_{y,c}- v_k(x)).
+  \end{align}
+\end{corollary}
+
+\begin{proof}
+For the state $x$ mentionned above, we have:
+\begin{align}
+  v_{\vec\mu}(x) - v_k(x) & = \1_x (I-(\gamma^n P_{\vec\mu,\vec\nu'})^\ell)^{-1} (T^n v_k - v_k) \\
+  & \ge \frac{1}{1-\gamma^{n\ell}} \1_x (T^n v_k - v_k)  = \frac{1}{1-\gamma^{n\ell}} \1_x (T_{\vec\mu,\vec\nu} v_k - v_k).
+\end{align}
+
+
+Write $w=T^{n-j}v_k$. By equation~\eqref{croissance}, we have
+\begin{align}
+  \1_x (T^n v_k - v_k) & \ge \1_y (T^{n-i-1} v_k  - T^{n-j} v_k) \\
+  & = \1_y (T^c w  - w) \\
+  & = \min_{\vec\nu'' \in N^c} \1_y (T_{\vec\mu_i^j,\vec\nu''}w-w) \\
+  & = \min_{\vec\nu'' \in N_{y,c}(\vec\mu_i^j)} \1_y (T_{\vec\mu_i^j,\vec\nu''}w-w) \\
+  & = \max_{\vec\mu' \in M^c} \min_{\vec\nu'' \in N_{y,c}(\vec\mu'} \1_y (\tilde T_{\vec\nu''}w-w)\label{eq1}
+\end{align}
+because of the choice of $y$.
+
+Finally, observe that
+\begin{align}
+  v_{y,c} - v_k(y) & = \max_{\mu \in M_{x,c}} \min_{\nu'' \in N}  \1_y (v_{\mu,\nu''} - v_k) \\
+  & = \max_{\mu \in M_{x,c}} \min_{\vec\nu'' \in N_{x,c}(\mu^c)}  \1_y (v_{\mu^c,\vec\nu''} - v_k) \\
+  & = \max_{\mu \in M_{x,c}} \min_{\vec\nu'' \in N_{x,c}(\mu^c)}  \1_y (I-\gamma^c P_{\mu^c,\vec\nu''})^{-1} (T_{\mu^c,\nu''} v_k - v_k ) \\
+  & = \max_{\mu \in M_{x,c}} \min_{\nu'' \in N_{x,c}(\mu^c)} \frac{1}{1-\gamma^c} \1_y(T_{\mu^c,\nu''} v_k - v_k ) \\
+  & \le \max_{\vec\mu' \in M^c} \min_{\nu'' \in N_{x,c}(\vec\mu'} \frac{1}{1-\gamma^c} \1_y(T_{\mu^c,\nu''} v_k - v_k ).
+  \label{eq2}
+\end{align}
+The result is obtained by combining Equations \eqref{eq1} and \eqref{eq2}.
+
+\end{proof}
+
+
+\bibliographystyle{plain}
+\bibliography{biblio.bib} 
+
+\end{document}

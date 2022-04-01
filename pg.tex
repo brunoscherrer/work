@@ -14,7 +14,7 @@
 \newtheorem{remark}{Remark}
 
 
-\title{On payoff games}
+\title{Towards a strongly polynomial algorithm for deterministic payoff games ?}
 
 \author{Bruno Scherrer\footnote{INRIA, Universit\'e de Lorraine, bruno.scherrer@inria.fr}}
 
@@ -32,36 +32,133 @@
 \maketitle
 
 \begin{abstract}
-  Given a zero-sum two-player $\gamma$-discounted game with $n$ states, ...
+  Given a zero-sum two-player $\gamma$-discounted deterministic game with $n$ states, we try to build an algorithm that is polynomial on $n$ (and independent of $\gamma$).
 \end{abstract}
 
 Consider a zero-sum two-player $\gamma$-discounted game with $n$ states and $m$ transitions, and its corresponding Bellman operators:
 \begin{align}
-  T_{\mu,\nu}v & = r + \gamma P_{\mu,\nu}v \\
-  T_{\mu}v & = \min_{\nu} T_{\mu,\nu}v \\
-  Tv & = \max_{\mu} T_{\mu}v.
+  T_{\mu,\nu}v & = r + \gamma P_{\mu,\nu}v, \\
+  T_{\mu}v & = \min_{\nu \in N} T_{\mu,\nu}v, \\
+  \tilde T_{\nu} & = \max_{\mu \in M} T_{\mu,\nu}v, \\
+  Tv & = \max_{\mu \in M} T_{\mu}v = \min_{\nu \in N} \tilde T_{\nu}v.
 \end{align}
 It is well-known that the optimal value $v_*$ is the only fixed point of $T$ and that any pair of stationary policies ($\mu_*,\nu_*)$ such that $T_{\mu_*,\nu_*}v_*=v_*$ form a pair of optimal policies.
 
-\section{Facts}
+We shall consider non-stationary policies $\vec\mu = (\mu_1,\dots,\mu_\ell) \in M^\ell$ and $\vec\nu = (\nu_1,\dots,\nu_\ell) \in N^\ell$. The operators above can be extended straightforwardly to this kind of policies:
+\begin{align}
+  P_{\vec\mu,\vec\nu} &= P_{\mu_1,\nu_1} \dots P_{\mu_\ell,\nu_\ell}, \\
+  T_{\vec\mu,\vec\nu} v &= T_{\mu_1,\nu_1} \dots T_{\mu_\ell,\nu_\ell} v, \\
+  T_{\vec\mu} v &= \min_{\vec\nu \in N^\ell} T_{\vec\mu,\vec\nu} v = T_{\mu_1} \dots T_{\mu_\ell} v, \\
+  \tilde T_{\vec\nu} v &= \max_{\vec\mu \in M^\ell} T_{\vec\mu,\vec\nu} v = \tilde T_{\nu_1} \dots \tilde T_{\mu_\ell} v, \\
+  T^\ell v & = \max_{\vec\mu \in M^\ell} T_{\vec\mu}v = \min_{\vec\nu \in N^\ell} \tilde T_{\vec\nu}v.
+\end{align}
+For any stationary policy $\mu$ or $\nu$, we shall write $\mu^\ell$ and $\nu^\ell$ for their non-stationary clones $(\mu,\mu,\dots,\mu)$ and $(\nu,\nu,\dots,\nu)$.
 
-Let $v\ge Tv$.
-Compute
+Let
 \begin{align}
-  T^n v = T_{\vec\mu,\vec\nu}v
+  I = \{~ (i,j) ~; 1 \le i \le j \le n ~\}.
 \end{align}
-For any policies $\mu$ and $\nu$, there exist $x,c$ such that $1 \le c \le n$ and
+For any non-stationary policies $\vec\mu = (\mu_1,\dots,\mu_n) \in M^n$ and $\vec\nu =(\nu_1,\dots,\nu_n) \in N^n$, for all $(i,j) \in I$, we shall write $\vec\mu_i^j$ and $\vec\nu_i^j$ for the sub-policies:
 \begin{align}
-  \1_x (P_{\mu,\nu})^c = \1_x.
+  \vec\mu_i^j &= \mu_i \mu_{i+1} \dots \mu_{j-1} \mu_{j}, \\
+  \vec\nu_i^j &= \nu_i \nu_{i+1} \dots \nu_{j-1} \nu_{j}.
 \end{align}
-Writing
+
+\section{A Policy Iteration algorithm}
+
+Take an arbitrary stationary policy $\mu_0$. Initialize the set $C_0=\emptyset$. We shall describe how we compute $C_{k+1}$ and $\mu_{k+1}$ from $C_k$ and $\mu_k$.
+
+Let $v_k$ be the value of $\mu_k$ against its best adversary:
 \begin{align}
-  M_{x,c}(v) &= \{~ \mu ~;~ \exists \nu \in \arg\min v_{\mu,\nu}, ~\1_x (P_{\mu,\nu})^c = \1_x \}.
+v_k = T_{\mu_k} v_k = \min_{\nu} T_{\mu_k,\nu} v_k.
 \end{align}
-Note that
+Compute the set of policies that avoid the cycles of $C_k$ or that stick to $\mu_k$:
+\begin{align}
+  M_{C_k} = \{~ \vec\mu \in M^n ~;~ \forall \vec\nu \in N^n,~ \forall (x,c) \in C_k,~ \forall (i,j) \in I,~ \1_x P_{\vec\mu_i^j,\vec\nu_i^j} \neq \1_x \} \cup \{ (\mu_k)^n \}.  
+\end{align}
+
+Identify policies $\vec\mu$ and $\vec\nu \in N^n$ such that
+\begin{align}
+  \max_{\vec\mu' \in M_{C_k}} T_{\vec\mu'} v = T_{\vec\mu,\vec\nu}v.
+\end{align}
+If $T_{\vec\mu,\vec\nu} v_k = v_k$, stop (and output $\mu_k$).
+
+For every $x$, there exists a minimal pair of integers $(i_x,j_x) \in I$ and a state $y_x$ such that the trajectory first reach a loop of length $c_x=j_x-i-x+1$ involving $y_x$, i.e. such that
+\begin{align}
+  \1_x P_{\vec\mu_1^{i_x-1},\vec\nu_1^{i_x-1}} = \1_x P_{\vec\mu_1^{j_x},\vec\nu_1^{j_x}} = \1_{y_x} = \1_y P_{\vec\mu_{i_x}^{j_x},\vec\nu_{i_x}^{j_x}}.
+\end{align}
+Update the set
+\begin{align}
+  C_{k+1} = C_k \cup \{ (y_x,c_x) ~;~ \1_{y_x} (T_{\vec\mu_{i_x}^{n},\vec\nu_{i_x}^{n}}v_k - T_{\vec\mu_{j_x+1}^{n},\vec\nu_{j_x+1}^{n}}v_k) = 0 \}.
+\end{align}
+Now, we shall consider the state-dependent policy such that:
+\begin{align}
+  \bar{\mu}(x) = \mu_1^{i_x-1} (\mu_{i_x}^{j_x})^\infty.
+\end{align}
+And we compute a stationary policy $\mu_{k+1}$ that is at least as good...
+
+  
+
+
+
+\section{Analysis of the 1-player case}
+
+Let us first consider the situation of a 1-player game (where $N={\nu}$). We shall omit all references to $\nu$ for clarity.
+
+
+
+\section{Analysis of the 2-player case}
+
+\subsection{Monotonicity}
+
+We begin by a monotonicity property:
+\begin{lemma}
+  For all $k$, and all $1 \le i \le j \le n$,
+  \begin{align}
+    v_{k+1} \ge w_{k,i,j} \ge v_k.
+  \end{align}
+
+\end{lemma}
+\begin{proof}
+  Since $v_k \le T v_k$, by monotonicity of the operator $T$, we have
+  \begin{align}
+    T^n v_k \ge T^{n-1}v_k \ge \dots \ge T v_k  \ge v_k.
+  \end{align}
+Therefore,  for every $1 \le i \le j \le n$, writing $c=j-i+1$, we have for any 
+\begin{align}
+  w_{k,i,j} - v_k &\ge v_{ij} - T^{n-j}v_k \\
+  & = (I-\gamma^c P_{\vec\mu_i^j,\nu_i^j})^{-1}(T_{\vec\mu_i^j,\vec\nu_i^j}T^{n-j}v_k - T^{n-j}v_k ) \\
+  & = (I-\gamma^c P_{\vec\mu_i^j,\nu_i^j})^{-1}( \underbrace{T^{n-i+1}v_k - T^{n-j}v_k}_{\ge 0} ) \\
+  & \ge 0.
+\end{align}
+We deduce that $w_k \ge v_k$.
+
+Now take any $1 \le i \le j \le n$ and $c=j-i+1$. To finish the proof, we are going to prove that $v_{k+1} \ge w_{k,i,j}$.
+By monotonicity of $T_{\mu_{k+1}}$, we have for all $i \le \ell \le j$,
+\begin{align}
+  T_{\mu_{k+1}} w_k \ge T_{\mu_{k+1}} T_{\vec\mu_\ell^j} w_{k,i,j}.
+\end{align}
+
+\end{proof}
+
+
+\subsection{Strong contraction}
+
+Consider the following sets of policies:
+\begin{align}
+  N_{x,c}(\mu) & = \{~ \vec\nu \in N^c ~;~ \1_x P_{\mu^c,\vec\nu} = \1_x \}, \\
+  M_{x,c} &= \{~ \mu ~;~ \arg\min v_{\mu,\nu} \cap N_{x,c}(\mu) \neq \emptyset \}.
+\end{align}
+Observe that
 \begin{align}
   \bigcup_{x,c} M_{x,c} = M.
 \end{align}
+
+For every $x$, there exist $i_x, j_x, c_x$ such that $1 \le i_x < j_x \le n$,  and
+\begin{align}
+  \1_x P_{\vec\mu_{i_x}^{j_x},\vec\nu_{i_x}^{j_x}} = \1_x.
+\end{align}
+
 
 Take a $\mu \in M_{x,c}$.
 Then
