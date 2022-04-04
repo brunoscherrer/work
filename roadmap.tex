@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+
+
+
+\begin{document}
+
+Bruno Scherrer, bruno.scherrer@inria.fr, April, 4th, 2022.
+~\\
+
+In this short note, I describe a roadmap in order to prove that a parity game can be solved in polynomial time along with an algorithm to do so.
+
+
+\paragraph{1) Extension of parity game}
+
+The goal is made more precise. Both players, if they lose, want to make the priority of the other player as low as possible. 
+This precisely define an optimal parity. This problem can be reduced to MPG through a Puri like reduction.
+Also we want to add a neutral priority (corresponding to 0 in the MPG reduction).
+
+\paragraph{2) Algorithm}
+
+Let $p$ be the highest priority. Let $i$ be the corresponding player. Consider the parity game of which priorities smaller than $p$ are made neutral.
+This can be translated to a mean payoff game with only two cost values: 0 and 1, which I believe can be partly ``solved'' efficiently (with at most $n^2$ steps of Value Iteration)
+
+Consider the total value in this mean payoff game. There are 3 kinds of states:
+\begin{enumerate}
+  \item  states with infinite value (they are won by $i$)
+\item  states with finite values (they are won by $1-i$) among which:
+  \begin{enumerate}
+  \item states with value $0$
+  \item states with value between $1$ and $n-1$.
+  \end{enumerate}
+\end{enumerate}
+Starting from $v=0$, which is such that $v \ge Tv$, the value is non-decreasing.
+
+
+Algorithm: Identify the three sets 1, 2-a and 2-b. Mark values of 1. Call recursively the algorithm on 2-a, propagate obtained values on 2-a. 
+
+\end{document}
