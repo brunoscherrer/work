@@ -34,49 +34,88 @@
 \end{abstract}
 
 
-Given an arena $\G=(X=[1,n]=X_1 \sqcup X_2,E=[1,m],\Omega)$ with $(n,m) \in \N^2$, a \emph{parity game} is a game played by two players, Odd and Even.
-$(X,E)$ is a graph without any dead ends: $X$ is a set of $n$ nodes and $E$ a set of $m$ directed edges such that each node has a least one outgoing edge. 
-The set of nodes  $X$ is partitioned into a set of states $X_1$ belonging to Odd and a set of nodes $X_2$ belonging to Even. $\Omega:X \to [1,d]$, known as a priority function, assigns an integer label to each node of the graph.
-A play is an infinitely long trajectory $(v_0,v_1,\dots)$ generated from some starting state $v_0$: at any time step $t$, the player to which the node $v_t$ chooses $v_{t+1}$ among the adjacent nodes from $v_t$ (following any of the outgoing edges of $E$ starting from $v_t$). The winner of the game is decided from the infinte sequence of priorities $(\Omega(v_0),\Omega(v_1),\dots$ occuring through the play: if the highest priority occurring infinitely often is odd, then Odd wins. Otherwise (if it is even), Even wins. 
+\paragraph{Parity and mean-payoff games}
 
-A \emph{mean-payoff game} is a game played by two players, Max and Min, on a arena $\G=(X=[1,n]=X_1 \sqcup X_2, E=[1,m],w)$ similar to that of a parity game ; the only difference is that the priority function is replaced by a cost function $w:X \to [-W,W]$ where $W \in \N$. The dynamics of the game is the same as above. On potential plays $(v_0,v_1,\dots)$ induced by the players' choices, Max wants to maximize $\liminf_{t \to \infty}\frac{1}{t} \sum_{i=1}^t w(v_i)$ while Min wants to minimize $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=1}^t g(v_i)$. \citet{ehrenfeucht79} have shown that for each starting node $v_0$,  such a game has a value $\nu(v_0)$, the optimal mean-payoff from $v_0$, such Max has a strategy to ensure that $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=0}^t w(v_i) \ge \nu(v_0)$ and Min has a strategy to ensure that $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=0}^t g(v_i) \le \nu(v_0)$.
+Given an arena $\G=(X=[1,n]=X_0 \sqcup X_1,E=[1,m],p)$ with $(n,m) \in \N^2$, a \emph{parity game} is a game played by two players, ODD and EVEN.
+$(X,E)$ is a directed graph. $X$ is a set of $n$ nodes and $E$ a set of $m$ directed edges such that each node has a least one outgoing edge. 
+The set of nodes  $X$ is partitioned into a set of states $X_1$ belonging to ODD and a set of nodes $X_0$ belonging to EVEN. $p:X \to [1,d]$, known as a priority function, assigns an integer label to each node of the graph.
+A play is an infinitely long trajectory $(x_0,x_1,\dots)$ generated from some starting state $x_0$: at any time step $t$, the player to which the node $x_t$ belongs chooses $x_{t+1}$ among the adjacent nodes from $x_t$ (following any of the outgoing edges of $E$ starting from $x_t$). The winner of the game is decided from the infinte sequence of priorities $(p(x_0),p(x_1),\dots)$ occuring through the play: if the highest priority occurring infinitely often is odd, then ODD wins. Otherwise (if it is even), EVEN wins. 
 
-For both games, it is known (cf. \citet{zielonka98} and \citet{ehrenfeucht79}) that there exist optimal strategies that are positional (i.e. that are mapping from nodes to outgoing edges). In particular, when both players follow these positional strategies from some state $v_0$, the play follows a (potentially empty) path followed by an infinitely-repeated cycle with optimal maximum parity of optimal mean payoff, in other words an optimal cycle $(v^*_1,\dots,v^*_c)$.
+A \emph{mean-payoff game} is a game played by two players, Max and Min, on a arena $\G=(X=[1,n]=X_1 \sqcup X_0, E=[1,m],w)$ similar to that of a parity game ; the only difference is that the priority function is replaced by a cost function $w:X \to [-W,W]$ where $W \in \N$. The dynamics of the game is the same as above. On potential plays $(x_0,x_1,\dots)$ induced by the players' choices, Max wants to maximize $\liminf_{t \to \infty}\frac{1}{t} \sum_{i=1}^t w(x_i)$ while Min wants to minimize $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=1}^t g(x_i)$. \citet{ehrenfeucht79} have shown that for each starting node $x_0$,  such a game has a value $\nu(x_0)$, the optimal mean-payoff from $x_0$, such Max has a strategy to ensure that $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=0}^t w(x_i) \ge \nu(x_0)$ and Min has a strategy to ensure that $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=0}^t g(x_i) \le \nu(x_0)$.
 
-\paragraph{Puri's reduction}
+For both games, it is known (cf. \citet{zielonka98} and \citet{ehrenfeucht79}) that there exist optimal strategies that are positional (i.e. that are mapping from nodes to outgoing edges). In particular, when both players follow these positional strategies from some state $x_0$, the play follows a (potentially empty) path followed by an infinitely-repeated cycle, in other words an optimal cycle $(x^*_1,\dots,x^*_c)$.
 
-As shown by \citet{puri96}, any parity game $\G=(X=[1,n]=X_1 \sqcup X_2,E=[1,m],\Omega)$ can be reduced to a mean-payoff game $\G'=(X=[1,n]=X_1 \sqcup X_2,E=[1,m],w)$, by choosing the weight function as follows
+\paragraph{Puri's reduction of a parity game to a mean-payoff game}
+
+As shown by \citet{puri96}, any parity game $\G=(X=[1,n]=X_1 \sqcup X_0,E=[1,m],p)$ can be reduced to a mean-payoff game $\G'=(X=[1,n]=X_1 \sqcup X_0,E=[1,m],w)$, by choosing the weight function as follows
 \begin{align}
-  \forall v,~~~ w(v) = (-K)^{\Omega(v)},
+  \forall x,~~~ w(x) = (-K)^{p(x)},
 \end{align}
-for some sufficiently big integer.
-Indeed, consider an optimal cycle $(v^*_1,\dots,v^*_c)$ (using the above-mentionned positional strategies) with maximal parity $\Omega^*$. If $\Omega^*$ is even then, by choosing $K=n$, we have
+for some sufficiently big integer $K$.
+Indeed, consider an optimal cycle $(x^*_1,\dots,x^*_c)$ (using the above-mentionned positional strategies) with maximal parity $p$. If $p$ is even then, by choosing $K=n$, we have
 \begin{align}
- 0 <  K^{\Omega^*} - (n-1) K^{\Omega^*-1} \le  \sum_{i=1}^{c} (-K)^{\Omega^*(v^*_i)} \le n K^{\Omega^*}.
+ 0 <  n^{p} - (n-1) n^{p-1} \le  \sum_{i=1}^{c} (-n)^{p(x^*_i)} \le n n^{p}.
 \end{align}
-If $\Omega^*$ is odd, we similarly have:
+If $p$ is odd, we similarly have:
 \begin{align}
-0 > -K^{\Omega^*} + (n-1) K^{\Omega^*-1} \ge   \sum_{i=1}^{c} (-K)^{\Omega^*(v^*_i)} \ge -n K^{\Omega^*}.
+0 > -n^{p} + (n-1) n^{p-1} \ge   \sum_{i=1}^{c} (-n)^{p(x^*_i)} \ge -n n^{p}.
 \end{align}
-In other words, from any starting node $v_0$, Even (resp. Odd) wins the parity game if the value of the mean-payoff game $\nu(v_0)$ is positive (resp. negative). Furthermore, an optimal pair of strategies for the mean-payoff game is optimal in the parity game.
+In other words, from any starting node $x_0$, EVEN (resp. ODD) wins the parity game if the value of the mean-payoff game $\nu(x_0)$ is positive (resp. negative). Furthermore, an optimal pair of strategies for the mean-payoff game is also optimal for the parity game (though the opposite is in general not true).
 
-\section{Extended parity game}
+\section{A more specified parity game}
 
-We shall consider a slight variation of Puri's reduction where instead of $K=n$, we take $K=n+1$. Doing so, given an optimal cycle $(v^*_1,\dots,v^*_c)$, when $\Omega^*$ is even, by using the fact that $(n+1)^2-(n-1)(n+1)=2(n+1)$, we can see that
+
+We shall consider a slight variation of Puri's reduction where instead of $K=n$, we take $K=2n$. Doing so, consider an optimal cycle $(x^*_1,\dots,x^*_c)$ with maximal parity $p$. If $p$ is even, we can see that
 \begin{align}
-   2 K^{\Omega^*} \le  K^{\Omega^*} - (n-1) K^{\Omega^*-1} \le  \sum_{i=1}^{c} (-K)^{\Omega^*(v^*_i)} \le n K^{\Omega^*}.
+   n (2n)^{p-1} <  (2n)^{p} - (n-1) (2n)^{p-1} \le  \sum_{i=1}^{c} (-2n)^{p(x^*_i)} \le n (2n)^{p}.
 \end{align}
-Similarly, when $\Omega^*$ is odd, we have
+Similarly, when $p$ is odd, we have
 \begin{align}
-  - 2 K^{\Omega^*} \le  -K^{\Omega^*} + (n-1) K^{\Omega^*-1} \ge \sum_{i=1}^{c} (-K)^{\Omega^*(v^*_i)} \ge -n K^{\Omega^*}.
+  -n (2n)^{p-1} \le  -(2n)^{p} + (n-1) (2n)^{p-1} \ge \sum_{i=1}^{c} (-2n)^{p(x^*_i)} \ge -n (2n)^{p}.
 \end{align}
-Through this reduction, the parity game is made more precise: when each player loses, he tries to make the parity with which the game is won as small as possible.
+By taking $K=2n$,  the mean-payoff reduction makes the parity game more precise: each player that loses tries to make the parity with which the game is won by the other player as small as possible. We shall call the resulting maximal parity that appears on optimal plays from some state $x$ the \emph{optimal parity} $p_*(x)$ (the above reduction to mean-payoff is in fact a proof that this specification of the parity game is well defined and has positional strategies as solutions, since mean-payoff have positional solutions).
 
-Finally, we shall consider an extension of the parity game where some nodes can have a neutral priority, in which case the cost in the mean-payoff game is $0$.
 
-\section{0-1 mean payoff game}
+\section{An algorithm}
 
-\section{The algorithm}
+We now describe a recursive algorithm that computes \emph{optimal parity} $p_*(x)$ for all states $x$.
+\paragraph{Terminal condition:} If the parity game only contains one priority $p$, then we know that for all states, the optimal parity is $p$.
+\paragraph{Recursion} When there are at least two priorities, let $p$ be the maximal parity. For concreteness, let us assume that $p$ is even.
+Let us consider the sub-problem whether EVEN can force ODD to win a game with priority $p$ or whether ODD can force EVEN to cycle in states with priorities (strictly) smaller than $p$ (in the original game, ODD may win or lose, but if he loses, it will be with a parity smaller than $p$). This sub-problem can be cast as an infinite-horizon mean payoff game with weight function:
+\begin{align}
+  \forall x,~ w(x) = \1_{p(x)=p}.
+\end{align}
+and with optimal value $v_*$.
+Consider $k$-horizon solution to this problem for $k=1,2,\dots$: starting with $v_0(x)=0$, we have
+\begin{align}
+  \forall x \in X_0, ~~v_{k+1}(x) & = w(x) + \max_{y;(x,y)\in E} v_k(y), \\
+  \forall x \in X_1, ~~v_{k+1}(x) & = w(x) + \min_{y;(x,y)\in E} v_k(y).
+\end{align}
+It is well known that $\frac{v_k}{k}$ tends to $v_*$ when $k$ tends to $\infty$. As we are going to see, the $N$th iterate $v_N$ is already quite informative:
+consider the sets
+\begin{align}
+ A &= \{~ x ~;~ v_N(x) \ge n ~\}\\
+ B &= \{~ x ~;~ 0 < v_N(x) < n ~\}\\
+ C & = \{~ x ~;~ v_N(x)=0 \}.
+\end{align}
+\begin{lemma}
+  The infinite-horizon mean payoff game is won by EVEN on $A$ and by ODD on $B \cup C$. On an optimal play, none of the states $x \in B$ appears on a cycle. 
+\end{lemma}
+
+We recursively solve the parity game restricted to the set $C$, a game which only contains priorities (strictly) smaller than $p$, i.e. obtain for each node $x \in B$ its optimal parity $p_*(x)$. From this, we can propagate this optimal parity from $B$ to $A$ by iterating (at most $n$ times):
+\begin{align}
+  \forall x \in X_0 \cap A, ~~ p_*(x) &= \max_{y;(x,y)\in E} p_*(y), \\
+  \forall x \in X_1 \cap A, ~~ p_*(x) &= \min_{y;(x,y)\in E} p_*(y),
+\end{align}
+where the max and min operators above use the order relation $\preceq$ on priorities:
+\begin{align}
+  p \prec p' \Leftrightarrow (-2)^{p}<(-2)^{p'}.  
+\end{align}
+
+As there is only one recursive call, and as the maximal priority necessarily decreases at each iteration, the above procedure takes at most $d$ iterations, and
+\begin{theorem}
+A parity game can be solved in polynomial time.
+\end{theorem}
 
 
 \bibliographystyle{plainnat}
