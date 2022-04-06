@@ -16,7 +16,7 @@
 \newtheorem{remark}{Remark}
 
 
-\title{A polynomial algorithm for the parity game through the notion of optimal priority}
+\title{A polynomial algorithm for the parity game}
 
 \author{Bruno Scherrer\footnote{INRIA, Universit\'e de Lorraine, bruno.scherrer@inria.fr}}
 
@@ -24,7 +24,12 @@
 \def\1{{\mathds 1}}
 \def\N{\mathbb N}
 \def\R{\mathbb R}
+\def\Q{\mathbb Q}
 \def\G{{\cal G}}
+\def\v{\overline v}
+\def\pa{Player~0}
+\def\pb{Player~1}
+
 
 \begin{document}
 \maketitle
@@ -36,20 +41,152 @@
 
 \paragraph{Parity and mean-payoff games}
 For any integers $i \le j$, write $[i,j]$ for the set of integers $\{i,i+1,\dots,j\}$.
-A parity game between two players, EVEN and ODD, can be described by a tuple $\G=(X=[1,n]=X_0 \sqcup X_1,~ E=[1,m],~ p:X \to [1,d])$ with $(n,m,d) \in \N^3$.
+A parity game between two players, \pa{ }and \pb, can be described by a tuple $\G=(X=[1,n]=X_0 \sqcup X_1,~ E=[1,m],~ p:X \to [1,d])$ with $(n,m,d) \in \N^3$.
 $(X,E)$ is a directed graph. $X$ is a set of $n$ nodes and $E$ a set of $m$ directed edges such that each node has at least one successor node. 
-The set of nodes  $X$ is partitioned into a set of nodes $X_0$ belonging to EVE and a set of nodes $X_1$ belonging to ODD. The function $p:X \to [1,d]$, known as a priority function, assigns an integer label to each node of the graph.
-A play is an infinitely long trajectory $(x_0,x_1,\dots)$ generated from some starting node $x_0$: at any time step $t$, the player to which the node $x_t$ belongs chooses $x_{t+1}$ among any of the outgoing edges of $E$ starting from $x_t$. The winner of the game is decided from the infinte sequence of priorities $(p(x_0),p(x_1),\dots)$ occuring through the play: if the highest priority occurring infinitely often is even (resp. odd), then EVE (resp. ODD) wins.
+The set of nodes  $X$ is partitioned into a set of nodes $X_0$ belonging to \pa{ }and a set of nodes $X_1$ belonging to \pb. The function $p:X \to [1,d]$, known as a priority function, assigns an integer label to each node of the graph.
+A play is an infinitely long trajectory $(x_0,x_1,\dots)$ generated from some starting node $x_0$: at any time step $t$, the player to which the node $x_t$ belongs chooses $x_{t+1}$ among any of the outgoing edges of $E$ starting from $x_t$. The winner of the game is decided from the infinte sequence of priorities $(p(x_0),p(x_1),\dots)$ occuring through the play: if the highest priority occurring infinitely often is even (resp. odd), then \pa{ }(resp. \pb) wins.
 
-A \emph{mean-payoff game} between two players, MAX and MIN, can be described by a tuple $\G=(X=[1,n]=X_1 \sqcup X_0,~ E=[1,m],~ w:X \to [-W,W])$ with $(n,m,W) \in \N^3$ similar to that of a parity game ; the only difference is that the priority function is replaced by a cost function $w:X \to [-W,W]$. The dynamics of the game is the same as above. On potential plays $(x_0,x_1,\dots)$ induced by the players' choices, MAX wants to maximize $\liminf_{t \to \infty}\frac{1}{t} \sum_{i=1}^t w(x_i)$ while MIN wants to minimize $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=1}^t g(x_i)$. \citet{ehrenfeucht79} have shown that for each starting node $x_0$,  such a game has a value $\nu(x_0)$, the optimal mean-payoff from $x_0$, such MAX has a strategy to ensure that $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=0}^t w(x_i) \ge \nu(x_0)$ and MIN has a strategy to ensure that $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=0}^t g(x_i) \le \nu(x_0)$.
+A \emph{mean-payoff game} between two players, \pa{ }and \pb, can be described by a tuple $\G=(X=[1,n]=X_0 \sqcup X_1,~ E=[1,m],~ g:X \to [-W,W])$ with $(n,m,W) \in \N^3$ similar to that of a parity game ; the only difference is that the priority function is replaced by a cost function $g:X \to [-W,W]$. The dynamics of the game is the same as above. On potential plays $(x_0,x_1,\dots)$ induced by the players' choices, \pb{ }wants to maximize $\liminf_{t \to \infty}\frac{1}{t} \sum_{i=1}^t g(x_i)$ while \pa{ }wants to minimize $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=1}^t g(x_i)$. \citet{ehrenfeucht79} have shown that for each starting node $x_0$,  such a game has a value $\v(x_0)$, the optimal mean-payoff from $x_0$, such \pb{ }has a strategy to ensure that $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=0}^t g(x_i) \ge \v(x_0)$ and \pa{ }has a strategy to ensure that $\limsup_{t \to \infty}\frac{1}{t} \sum_{i=0}^t g(x_i) \le \v(x_0)$.
 
-For both games, it is known (cf. \citet{zielonka98} and \citet{ehrenfeucht79}) that there exist optimal strategies that are positional (i.e. that are mapping from nodes to outgoing edges). In particular, when both players follow these positional strategies from some node $x_0$, the play follows a (potentially empty) path followed by an infinitely-repeated cycle, in other words an optimal cycle $(x^*_1,\dots,x^*_{c(x_0)})$ for some $c(x_0) \in [1,n]$.
+For both games, it is known (cf. \citet{zielonka98}, \citet{ehrenfeucht79}) that there exist optimal strategies that are positional (i.e. that are mapping from nodes to outgoing edges). In particular, when both players follow these positional strategies from some node $x_0$, the play follows a (potentially empty) path followed by an infinitely-repeated cycle $(x^*_1,\dots,x^*_{c(x_0)})$ for some $c(x_0) \in [1,n]$.
+
+
+\section{Mean payoff game with costs in $\{0,1\}$}
+
+Before we consider parity games, we shall spend some time on the specific class of mean payoff games where the costs all belong to $\{0,1\}$. Let $\v:X \to \Q$ be the value of such a mean-payoff game. For any starting state $x$, the value $\v(x)$ from node $x$ necessarily has the form $\frac{a}{b}$ for some $0 \le a \le b \le n$. In this context the aim of this section is to describe a computationnally efficient characterizaton of 1) the set of nodes $x$ for which \pb{ }can ensure that $\v(x)>0$ and 2) the \emph{set of policies} such that \pa{ }can ensure that the mean-payoff is $0$. To do this, we shall focus on the closely related total cost of the $h$-horizon payoff game, played on the same graph with the same cost function, but with a finite duration $h$. We begin by a bit of terminology for this setting.
+
+Let $N$ and $M$ be the set of (positional) strategies for \pa{ }and \pb:
+\begin{align}
+  N = \{~ \mu:X_0 \to X ~;~ \forall x \in X_1,~ \mu(x) \in \{~ y;(x,y) \in E\} ~\},\\
+  M = \{~ \mu:X_1 \to X ~;~ \forall x \in X_0,~ \mu(x) \in \{~ y;(x,y) \in E\} ~\}.
+\end{align}
+For any pair of strategies $\mu \in M$ and $\nu \in N$, consider the operator $T_{\mu,\nu}$ that acts on functions $v:X \to \N$:
+\begin{align}
+  \left\{\begin{array}{l}
+  \forall x \in X_0,~ [T_{\mu,\nu}v](x) = g(x) + v(\nu(x)), \\
+  \forall x \in X_1,~ [T_{\mu,\nu}v](x)= g(x) + v(\mu(x)).
+  \end{array}\right.
+\end{align}
+For any sequence of strategies $(\mu_1,\dots,\mu_h) \in M^h$ of \pb{ }and $(\nu_1,\dots,\nu_h) \in N^h$ of \pa, and for any starting state $x$, the integer $[T_{\mu_1,\nu_1} \dots T_{\mu_h,\nu_h}0](x)$ is the total payoff obtained on the $h$-long trajectory where \pb{ } (resp. \pa) uses $\mu_t$ (resp. $\nu_t$) for picking transitions at time $t$ (though the player never pick transitions simultaneously, the exact time steps where each actually picks a transition depends on $x$, and all the decision that have been made in the past).
+
+For any pair of strategies $\mu \in M$ and $\nu \in N$, consider also the operators $T_\mu$, $\tilde T_\nu$ and $T$ that also act on functions $v:X \to \N$:
+\begin{align}
+  \left\{\begin{array}{l}
+  \forall x \in X_0,~ [T_{\mu}v](x)= g(x) + \min_{y;(x,y) \in E} v(y), \\
+  \forall x \in X_1,~ [T_{\mu}v](x)= g(x) + v(\mu(x)),
+  \end{array}\right. \\
+  \left\{\begin{array}{l}
+  \forall x \in X_0,~ [\tilde T_{\nu}v](x) = g(x) + v(\nu(x)), \\
+  \forall x \in X_1,~ [\tilde T_{\nu}v](x) = g(x) + \max_{y;(x,y) \in E} v(y),
+  \end{array}\right. \\
+  \left\{\begin{array}{l}
+  \forall x \in X_0,~ [T v](x) = g(x) + \min_{y;(x,y) \in E} v(y), \\
+  \forall x \in X_1,~ [T v](x) = g(x) + \max_{y;(x,y) \in E} v(y).
+  \end{array}\right. 
+\end{align}
+Observe that, for any $v$,  we have the following relations expressed in a somewhat compact form:
+\begin{align}
+  T_{\mu} v = \min_{\nu \in N} T_{\mu,\nu}v, ~~~~~
+  \tilde T_{\nu} v = \max_{\mu \in M} T_{\mu,\nu}v, ~~~~~
+  T v = \max_{\mu \in M} T_{\mu}v = \min_{\nu \in N} \tilde T_{\nu} = \max_{\mu \in M}\min_{\nu \in N}T_{\mu,\nu}v = \min_{\nu \in N}\max_{\mu \in M}T_{\mu,\nu}v.
+\end{align}
+where the max and min are taken componentwise.
+
+Given a sequence of strategies $(\mu_1,\dots,\mu_h) \in M^h$ of \pb, and any starting state $x$, the integer $[T_{\mu_1} \dots T_{\mu_h}0](x)$ is the \emph{minimal} total cost that \pa{ }can induce if \pa{ }uses $\mu_t$ to pick a transition at time $t$. Symmetrically, given a sequence of strategies $(\nu_1,\dots,\nu_h) \in N^h$ of \pa, and any starting state $x$, the integer $[\tilde T_{\nu_1} \dots \tilde T_{\nu_h}0](x)$ is the \emph{maximal} total cost that \pb{ }can induce if \pb{ }uses $\nu_t$ to pick a transition at time $t$. Eventually, for any starting state $x$, $[T^h 0](x)$ is the value of the $h$-horizon payoff game and any pair of sequence of strategies $(\mu_1,\dots,\mu_h) \in M^h$ of \pb{ }and $(\nu_1,\dots,\nu_h) \in N^h$ of \pa{ }that satisfy $T^h 0=T_{\mu_1,\nu_1} \dots T_{\mu_h,\nu_h}0$ are optimal policies for the $h$-horizon problem.
+
+Starting with $v_0=0$, consider the sequence of values obtained by iteratively applying the operator $T$:
+\begin{align}
+ \forall k\ge 0,~~~~ v_{k+1} = T v_k.
+\end{align}
+As we have just said, $v_k=[T^k0]$ corresponds to the solution of the $k$-horizon game.
+Let $v_\infty$ be limit of this sequence:
+\begin{align}
+  v_\infty = \lim_{k \to \infty} v_k.
+\end{align}
+Note that $v_\infty(x)$ can be infinite for some $x$.
+\citet{zwick96} have shown that the mean payoff is equal to the limit of the average $k$-horizon cost when $k$ tends to infinity:
+\begin{align}
+\v = \lim_{k \to \infty} \frac{v_k}{k}.
+\end{align}
+It can be seen that $\v(x)>0$ if and only if $v_\infty(x)=\infty$.
+
+Let us make a few observations.
+\begin{lemma}\label{monotonicity}
+The sequence $(v_k)_{k \in \N}$ is non-decreasing.
+\end{lemma}
+\begin{proof}
+  This follows from the facts that 1) $T$ is a monotone operator in the sense that
+  \begin{align}
+    \forall v,v',~ v \le v' \Rightarrow Tv \le Tv',
+  \end{align}
+  and 2) that $v_0 \le T v_0$ since costs are non-negative.
+\end{proof}
+
+
+\begin{lemma}
+  For any state $x$, and any $k \ge n$,
+  \begin{align}
+    v_k(x) = 0 ~\Longleftrightarrow~ v_\infty(x)=0.
+  \end{align}
+\end{lemma}
+\begin{proof}
+  The ``$\Leftarrow$'' implication is a consequence of Lemma~\ref{monotonicity}.
+  
+  To prove the ``$\Rightarrow$'' implication, we shall prove that for any starting state $x_0$ and any infinite sequence $(\mu_1,\mu_2,\dots) \in M^\N$ of decisions of \pb. We shall prove that \pa{ }can ensure that the total cost is 0. 
+  Let $(\nu_1,\dots,\nu_n) \in N^n$ be a sequence of policies of \pa{ }such that:
+  \begin{align}
+    v_k = T^n v_{k-n} = \tilde T_{\nu_1,\dots,\nu_n} v_{k-n}. 
+  \end{align}
+  By assumption, we have
+  \begin{align}
+    0 = [T_{\nu_1,\dots,\nu_n} v_{k-n}](x)
+  \end{align}
+   stack... cycle. check.
+\end{proof}
+
+
+\begin{lemma}
+  For any state $x$, and any $k \ge n^2$,
+  \begin{align}
+    v_k(x) \ge n ~\Longleftrightarrow~ v_\infty(x)=\infty.
+  \end{align}
+\end{lemma}
+\begin{proof}
+
+\end{proof}
+
+
+\begin{lemma}
+  Any positional policy $\nu \in N$ that ensures that the mean payoff from some state $x$ is $0$ necessarily reach the set in at most $n$ steps.
+\end{lemma}
+\begin{proof}
+...!!!...
+\end{proof}
+
+
+
+Consider the following partition of $X$:
+\begin{align}
+  A & = \{~ x ~;~ v_N(x)=0 ~\}, \\
+  B &= \{~ x ~;~ 0 < v_N(x) < n ~\}, \\
+  C &= \{~ x ~;~ v_N(x) \ge n ~\}.
+\end{align}
+\begin{lemma}
+  The following properties hold:
+  \begin{enumerate}
+  \item For any state $x \in A$, there exists a strategy for \pb{ }such that for all strategies of \pa, plays from $x$ in $\G'$ will only visit nodes with cost $0$.
+  \item For any state $x \in B$, there exists a strategy for \pb{ }such that for all strategies of \pa, plays from $x$ in $\G'$ will reach $A$ in at most $n$ steps. 
+  \item For any state $x \in C$, there exists a strategy for \pa{ }such that for all strategies of \pb, plays from $x$ in $\G'$ will visit nodes with cost $1$ infinitely often.
+  \end{enumerate}
+\end{lemma}
+
+
 
 \section{The optimal priority of a parity game}
 
-\citet{puri96} has introduced the following reduction of any parity game $\G=(X, ~E,~ p)$ to a mean-payoff game $\G'=(X,~ E,~ w)$ that involved the exact same graph $(X,E)$ and the cost function:
+\citet{puri96} has introduced the following reduction of any parity game $\G=(X, ~E,~ p)$ to a mean-payoff game $\G'=(X,~ E,~ w)$ that involves the exact same graph $(X,E)$ and the cost function:
 \begin{align}
-  \forall x,~~~ w(x) = (-n)^{p(x)}.
+  \forall x,~~~ g(x) = (-n)^{p(x)}.
 \end{align}
 Indeed, consider an optimal cycle $(x^*_1,\dots,x^*_c)$ in this mean-payoff game (using the above-mentionned positional strategies). Let $p=\max_{1 \le i \le c} p(x^*_i)$ be the maximal priority obtained in this cycle. If $p$ is even then
 \begin{align}
@@ -59,11 +196,11 @@ If $p$ is odd, we similarly have:
 \begin{align}
 0 > -n^{p} + (n-1) n^{p-1} \ge   \sum_{i=1}^{c} (-n)^{p(x^*_i)}.
 \end{align}
-As a consequence, from any starting node $x_0$, EVEN (resp. ODD) wins the parity game if the value $v(x_0)$ of the mean-payoff game  is positive (resp. negative). Furthermore, an optimal pair of strategies for the mean-payoff game is also optimal for the parity game (note that the opposite is in general not true).
+As a consequence, from any starting node $x_0$, \pa{ }(resp. \pb) wins the parity game if the value $v(x_0)$ of the mean-payoff game  is positive (resp. negative). Furthermore, an optimal pair of strategies for the mean-payoff game is also optimal for the parity game (note that the opposite is in general not true).
 
 We shall consider a slight variation of Puri's reduction that consists in choosing the alternative cost function:
 \begin{align}
-  \forall x,~~~ w(x) = (-K)^{p(x)}
+  \forall x,~~~ g(x) = (-K)^{p(x)}
 \end{align}
 with any $K$ such that $K-(n-1) > n^2$
 (for instance one may take $K=(n+1)^2$).
@@ -84,7 +221,7 @@ and the value $v(x_0)$ from any node $x_0$ that reaches this cycle is such that
 \begin{align}
   -n K^{p-1} \ge \frac{-n^2 K^{p-1}}{c} > v(x_0) \ge -\frac{n}{c}K^p \ge - n K^p. 
 \end{align}
-From any starting node $x_0$, we shall say that the \emph{optimal priority $p_*(x_0)$} is the value $p$ such that $n K^{p-1} < v(x_0) \le n K^p$ or $-n K^{p-1} > v(x_0) \ge -n K^p$ (by our choice of $K$ this value is indeed unique). If this priority is even (resp. odd), EVEN (resp. ODD) wins the parity game from $x_0$.
+From any starting node $x_0$, we shall say that the \emph{optimal priority $p_*(x_0)$} is the value $p$ such that $n K^{p-1} < v(x_0) \le n K^p$ or $-n K^{p-1} > v(x_0) \ge -n K^p$ (by our choice of $K$ this value is indeed unique). If this priority is even (resp. odd), \pa{ }(resp. \pb) wins the parity game from $x_0$.
 
 Through this slightly modified reduction, one makes the parity game more precise: from any starting node, each player that cannot win tries to make the priority with which the game is won by the other player as low as possible. 
 
@@ -94,49 +231,14 @@ Through this slightly modified reduction, one makes the parity game more precise
 We shall now describe a recursive algorithm that computes the \emph{optimal priority} $p_*:X \to [1,d]$ of a game $\G = \{ X,~ E,~ p)$ that has some similarity with the original algorithm proposed by \citet{zielonka98} for computing the winning regions of a parity game. 
 \paragraph{Terminal condition:} If the game $\G$ only contains only one priority $q$, then we know that for all nodes, the optimal parity is $q$.
 \paragraph{Recursion} When the game $\G$ has at least two different priorities, let $q$ be the maximal priority. For concreteness, let us assume that $q$ is even (the other case is similar).
-Let us consider the sub-problem whether EVEN can win the game with priority $q$ or whether ODD can force EVEN to cycle in nodes with priorities (strictly) lower than $q$ (in $\G$, ODD may win or lose, but if he loses, it will be with a priority lower than $q$). This sub-problem can be cast as a mean payoff game $\G'=(X,~ E,~ w)$ with cost function with values in $\{0,1\}$:
+Let us consider the sub-problem whether \pa{ }can win the game with priority $q$ or whether \pb{ }can force \pa{ }to cycle in nodes with priorities (strictly) lower than $q$ (in $\G$, \pb{ }may win or lose, but if he loses, it will be with a priority lower than $q$). This sub-problem can be cast as a mean payoff game $\G'=(X,~ E,~ w)$ with cost function with values in $\{0,1\}$:
 \begin{align}
-  \forall x,~ w(x) = \1_{p(x)=q}.
+  \forall x,~ g(x) = \1_{p(x)=q}.
 \end{align}
-Indeed, writing $\overline v$ the optimal value of this mean-payoff game, all nodes $x$ such that $\overline v(x) \ge \frac{1}{n}$ are won by EVEN with priority $q$, and all other nodes $x$, for which we necessarily have $\overline v(x)=0$, are such that ODD can force EVEN to cycle to nodes with lower priorities.
-Consider the (finite) $k$-horizon solutions to this problem for $k=1,2,\dots$: starting with $v_0=0$, the optimal $k$-horizon payoffs can be computed by induction as follows:
-\begin{align}
-  v_{k+1} = T v_k
-\end{align}
-where for all $v$, the operator $T$ is defined as follows:
-\begin{align}
-  \forall x \in X_0, ~~[T v](x) & = w(x) + \max_{y;(x,y)\in E} v(y), \\
-  \forall x \in X_1, ~~[T v](x) & = w(x) + \min_{y;(x,y)\in E} v(y).
-\end{align}
-\citet{zwick96}) showed that for any mean payoff game with cost function $w:X \to [ -W, W]$, $\frac{v_k}{k}$ tends to $\overline v$ when $k$ tends to $\infty$, and $\overline v$ can be deduced by rounding from $v_N$ with $N=4n^3W$ iterations, but such an approach only computes $\overline v$ and requires an extra procedure to compute optimal policies. We shall use here a more refined analysis: compute $v_N$ for $N=n^2$. Consider the following partition of $X$:
-\begin{align}
-  A & = \{~ x ~;~ v_N(x)=0 ~\}, \\
-  B &= \{~ x ~;~ 0 < v_N(x) < n ~\}, \\
-  C &= \{~ x ~;~ v_N(x) \ge n ~\}.
-\end{align}
-\begin{lemma}
-  The following properties hold:
-  \begin{enumerate}
-  \item For any state $x \in A$, there exists a strategy for ODD such that for all strategies of EVEN, plays from $x$ in $\G'$ will only visit nodes with cost $0$.
-  \item For any state $x \in B$, there exists a strategy for ODD such that for all strategies of EVEN, plays from $x$ in $\G'$ will reach $A$ in at most $n$ steps. 
-  \item For any state $x \in C$, there exists a strategy for EVEN such that for all strategies of ODD, plays from $x$ in $\G'$ will visit nodes with cost $1$ infinitely often.
-  \end{enumerate}
-\end{lemma}
-%
-\begin{proof}
-  First of all, since for all $v_0 \ge T v_0$, and the operator $T$ is monotone in the sense that
-  \begin{align}
-    \forall v, v'~, v \le v' \Longrightarrow T v \le T v',
-  \end{align}
-  the sequence $(v_k)$ is non-decreasing.
-  \begin{enumerate}
-  \item
-  \item
-  \item 
-  \end{enumerate}
-\end{proof}
-%
-We recursively solve the parity game restricted to the set $A$, i.e. the game $\G \backslash (B \cup C)$, a game which only contains priorities (strictly) smaller than $q$, i.e. obtain for each node $x \in A$ its optimal parity $p_*(x)$. From this, we can propagate this optimal priority from $A$ to $B$ by iterating (at most $n$ times):
+
+...
+
+We recursively solve the parity game restricted to the set $A$, i.e. the game $\G \backslash (B \cup C)$, a game which only contains priorities (strictly) lower than $q$, i.e. obtain for each node $x \in A$ its optimal parity $p_*(x)$. From this, we can propagate ? this optimal priority from $A$ to $B$ by iterating (at most $n$ times):
 \begin{align}
   \forall x \in X_0 \cap B, ~~ p_*(x) &= \max_{y;(x,y)\in E} p_*(y), \\
   \forall x \in X_1 \cap B, ~~ p_*(x) &= \min_{y;(x,y)\in E} p_*(y),
