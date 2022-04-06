@@ -45,54 +45,69 @@ A \emph{mean-payoff game} is a game played by two players, Max and Min, on a are
 
 For both games, it is known (cf. \citet{zielonka98} and \citet{ehrenfeucht79}) that there exist optimal strategies that are positional (i.e. that are mapping from nodes to outgoing edges). In particular, when both players follow these positional strategies from some state $x_0$, the play follows a (potentially empty) path followed by an infinitely-repeated cycle, in other words an optimal cycle $(x^*_1,\dots,x^*_c)$.
 
-\paragraph{Puri's reduction of a parity game to a mean-payoff game}
+\section{The optimal priority of a parity game}
 
-As shown by \citet{puri96}, any parity game $\G=(X=[1,n]=X_1 \sqcup X_0,E=[1,m],p)$ can be reduced to a mean-payoff game $\G'=(X=[1,n]=X_1 \sqcup X_0,E=[1,m],w)$, by choosing the weight function as follows
+\citet{puri96} has introduced the following reduction of any parity game $\G=(X=[1,n]=X_1 \sqcup X_0,E=[1,m],p)$ to a mean-payoff game $\G'=(X=[1,n]=X_1 \sqcup X_0,E=[1,m],w)$ that involved the exact same graph $(X,E)$ and the weight function:
 \begin{align}
-  \forall x,~~~ w(x) = (-K)^{p(x)},
+  \forall x,~~~ w(x) = (-n)^{p(x)}.
 \end{align}
-for some sufficiently big integer $K$.
-Indeed, consider an optimal cycle $(x^*_1,\dots,x^*_c)$ (using the above-mentionned positional strategies) with maximal parity $p$. If $p$ is even then, by choosing $K=n$, we have
+Indeed, consider an optimal cycle $(x^*_1,\dots,x^*_c)$ of the mean-payoff game (using the above-mentionned positional strategies). Let $p=\max_{1 \le i \le c} p(x^*_i)$ be the maximal priority obtained in this cycle. If $p$ is even then
 \begin{align}
- 0 <  n^{p} - (n-1) n^{p-1} \le  \sum_{i=1}^{c} (-n)^{p(x^*_i)} \le n n^{p}.
+ 0 <  n^{p} - (n-1) n^{p-1} \le  \sum_{i=1}^{c} (-n)^{p(x^*_i)}.
 \end{align}
 If $p$ is odd, we similarly have:
 \begin{align}
-0 > -n^{p} + (n-1) n^{p-1} \ge   \sum_{i=1}^{c} (-n)^{p(x^*_i)} \ge -n n^{p}.
+0 > -n^{p} + (n-1) n^{p-1} \ge   \sum_{i=1}^{c} (-n)^{p(x^*_i)}.
 \end{align}
-In other words, from any starting node $x_0$, EVEN (resp. ODD) wins the parity game if the value of the mean-payoff game $\nu(x_0)$ is positive (resp. negative). Furthermore, an optimal pair of strategies for the mean-payoff game is also optimal for the parity game (though the opposite is in general not true).
+As a consequence, from any starting node $x_0$, EVEN (resp. ODD) wins the parity game if the value $v(x_0)$ of the mean-payoff game  is positive (resp. negative). Furthermore, an optimal pair of strategies for the mean-payoff game is also optimal for the parity game (note that the opposite is in general not true).
 
-\section{A more specified parity game}
-
-
-We shall consider a slight variation of Puri's reduction where instead of $K=n$, we take $K=2n$. Doing so, consider an optimal cycle $(x^*_1,\dots,x^*_c)$ with maximal parity $p$. If $p$ is even, we can see that
+We shall consider a slight variation of Puri's reduction that consists in choosing the alternative weight function:
 \begin{align}
-   n (2n)^{p-1} <  (2n)^{p} - (n-1) (2n)^{p-1} \le  \sum_{i=1}^{c} (-2n)^{p(x^*_i)} \le n (2n)^{p}.
+  \forall x,~~~ w(x) = (-K)^{p(x)}
 \end{align}
-Similarly, when $p$ is odd, we have
+with any $K$ such that $K-(n-1) > n^2$
+(for instance one may take $K=(n+1)^2$).
+
+Consider an optimal cycle $(x^*_1,\dots,x^*_c)$ of this mean-payoff game. Let $p=\max_{1 \le i \le c} p(x^*_i)$ be the maximal priority obtained in this cycle. If $p$ is even then
 \begin{align}
-  -n (2n)^{p-1} \le  -(2n)^{p} + (n-1) (2n)^{p-1} \ge \sum_{i=1}^{c} (-2n)^{p(x^*_i)} \ge -n (2n)^{p}.
+n^2 K^{p-1} <  (K-(n-1))K^{p-1} =   K^p - (n-1) K^{p-1}  \le \sum_{i=1}^{c} (-K)^{p(x^*_i)} \le n K^p,
 \end{align}
-By taking $K=2n$,  the mean-payoff reduction makes the parity game more precise: each player that loses tries to make the parity with which the game is won by the other player as small as possible. We shall call the resulting maximal parity that appears on optimal plays from some state $x$ the \emph{optimal parity} $p_*(x)$ (the above reduction to mean-payoff is in fact a proof that this specification of the parity game is well defined and has positional strategies as solutions, since mean-payoff have positional solutions).
+and the value $v(x_0)$ from any state $x_0$ that reaches this cycle is such that
+\begin{align}
+  n K^{p-1} \le \frac{n^2 K^{p-1}}{c} < v(x_0) \le \frac{n}{c} K^p \le n K^p. 
+\end{align}
+When $p$ is odd, we have
+\begin{align}
+  - n^2 K^{p-1} > -(K-(n-1))K^{p-1} =   -K^p + (n-1) K^{p-1} \ge \sum_{i=1}^{c} (-K)^{p(x^*_i)} \ge -n K^p,
+\end{align}
+and the value $v(x_0)$ from any state $x_0$ that reaches this cycle is such that
+\begin{align}
+  -n K^{p-1} \ge \frac{-n^2 K^{p-1}}{c} > v(x_0) \ge -\frac{n}{c}K^p \ge - n K^p. 
+\end{align}
+From any starting node $x_0$, we shall say that the \emph{optimal priority $p$} is the unique value $p$ such that $n K^{p-1} < v(x_0) \le n K^p$ or $-n K^{p-1} > v(x_0) \ge -n K^p$. If this priority is even (resp. odd), EVEN (resp. ODD) wins the parity game from $x_0$.
+
+Through this slightly modified reduction, one makes the parity game more precise: from any starting state, each player that loses tries to make the priority with which the game is won by the other player as low as possible. 
 
 
-\section{An algorithm}
+\section{An algorithm for computing the optimal parity}
 
 We now describe a recursive algorithm that computes \emph{optimal parity} $p_*(x)$ for all states $x$.
 \paragraph{Terminal condition:} If the parity game only contains one priority $p$, then we know that for all states, the optimal parity is $p$.
 \paragraph{Recursion} When there are at least two priorities, let $p$ be the maximal parity. For concreteness, let us assume that $p$ is even.
-Let us consider the sub-problem whether EVEN can force ODD to win a game with priority $p$ or whether ODD can force EVEN to cycle in states with priorities (strictly) smaller than $p$ (in the original game, ODD may win or lose, but if he loses, it will be with a parity smaller than $p$). This sub-problem can be cast as an infinite-horizon mean payoff game with weight function:
+Let us consider the sub-problem whether EVEN can force ODD to win a game with priority $p$ or whether ODD can force EVEN to cycle in states with priorities (strictly) smaller than $p$ (in the original game, ODD may win or lose, but if he loses, it will be with a parity smaller than $p$). This sub-problem can be cast as a mean payoff game with weight function:
 \begin{align}
   \forall x,~ w(x) = \1_{p(x)=p}.
 \end{align}
-and with optimal value $v_*$.
-Consider $k$-horizon solution to this problem for $k=1,2,\dots$: starting with $v_0(x)=0$, we have
+Indeed, writing $v$ the optimal value of this mean-payoff game,
+
+
+
+Consider the finite $k$-horizon solution to this problem for $k=1,2,\dots$: starting with $v_0(x)=0$, we have
 \begin{align}
   \forall x \in X_0, ~~v_{k+1}(x) & = w(x) + \max_{y;(x,y)\in E} v_k(y), \\
   \forall x \in X_1, ~~v_{k+1}(x) & = w(x) + \min_{y;(x,y)\in E} v_k(y).
 \end{align}
-It is well known that $\frac{v_k}{k}$ tends to $v_*$ when $k$ tends to $\infty$. As we are going to see, the $N$th iterate $v_N$ is already quite informative:
-consider the sets
+It is well known that $\frac{v_k}{k}$ tends to $v$ when $k$ tends to $\infty$. As we are going to see, 
 \begin{align}
  A &= \{~ x ~;~ v_N(x) \ge n ~\}\\
  B &= \{~ x ~;~ 0 < v_N(x) < n ~\}\\
