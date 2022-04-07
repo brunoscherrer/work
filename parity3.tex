@@ -109,7 +109,7 @@ F = \left\{~ \nu \in N ~;~ \exists x \in X,~ \forall \mu \in M,~ v_{\mu,\nu}(x)<
 \end{align}
 Let $Z$ be the set of nodes from which \pb{ }only visits nodes with parity (strictly) smaller than $p$:
 \begin{align}
-Z = \left\{ x \in X~;~ v_*(x)=0  \right\}.
+Z = \left\{ x \in X~;~ v_*(x)=0  \right\}. \label{Z}
 \end{align}
 
 We shall provide an efficiently-computable characterization of the sets $Y$, $F$ and $Z$.
@@ -125,17 +125,21 @@ Indeed, the set of strategies $F$ and the set $Y$ can be characterized as follow
   The characterization of $F$ is a consequence of the fact that after $j$ steps for some $j \in [0,n]$, the trajectory induced by $\mu$ and $\nu$ has necessarily entered its limiting cycle, that necessarily has value 0 (otherwise it would contradict the definition of $F$). The characterization of $Y$ is a consequence of that of $F$.
 \end{proof}
 In the parity game literature, $Y$ is called the \emph{$1$-attractor set of $Z$}. Given $Z$, $Y$ and $F$ can be computed in $n$ steps as follows:
+
 ...
-In particular with can observe that $F$ is a rectangular set.
+
+In particular, we can observe that $F$ is a rectangular set.
 
 Eventually, it turns out that the set $Z$ can also be characterized in a simple way:
 \begin{lemma}
+  The set $Z$ is equal to
   \begin{align}
-    Z = \left\{~ x \in X ~;~ [T^n 0](x) = 0 ~\right\}.
+    Z' = \left\{~ x \in X ~;~ [T^n 0](x) = 0 ~\right\}.
   \end{align}
 \end{lemma}
 \begin{proof}
-Assume that $v_*(x)>0$ for some $x$. Then this implies that Player 0 has a strategy that can obtain at least a cost of $1$ from $x$ (on the infinite play). Then, necessarily, \pa{ }can obtain it in $j \in [1,n]$, and thus $[T^jj 0](x)>0$. The result is obtained by obersving that the operator $T$ is monotone and $0 \le T 0$ (since costs are non-negative).
+  First observe that the operator $T$ is monotone and $0 \le T 0$ (since costs are non-negative). Therefore, the sequence of functions $(T^k 0)_{k \ge 0}$ is non-decreasing. An immediate consequence is that $Z' \subset Z$.
+  Let us prove now that $Z \subset Z'$. Assume that $v_*(x)>0$ for some $x$. Then this implies that Player 0 has a strategy that can obtain at least a cost of $1$ from $x$ (on the infinite play). Then, necessarily, \pa{ }can also obtain it in $j$ steps with $j \in [1,n]$, and thus $[T^n 0](x) \ge [T^j 0](x)>0$.
 \end{proof}
 
 \section{An algorithm for the parity game}
@@ -146,7 +150,6 @@ Let us consider the sub-problem whether Player $i$ can win the game with priorit
 \begin{align}
   \forall x,~ g(x) = (-1)^p \1_{p(x)=p}.
 \end{align}
-
 
 
 We recursively solve the parity game restricted to the set $A$, i.e. the game $\G \backslash (B \cup C)$, a game which only contains priorities (strictly) lower than $p$, i.e. obtain for each node $x \in A$ its optimal parity $p_*(x)$. From this, we can propagate ? this optimal priority from $A$ to $B$ by iterating (at most $n$ times):
