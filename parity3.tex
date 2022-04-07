@@ -29,7 +29,7 @@
 \def\v{\overline v}
 \def\pa{Player~0}
 \def\pb{Player~1}
-
+\def\suc{\mbox{succ}}
 
 \begin{document}
 \maketitle
@@ -62,10 +62,14 @@ Consider the total payoff game $\G'=(X,~ E,~ g)$ with cost function
 \end{align}
 in which \pa{ }wants to maximize the total cost on induced infinitely-long trajectories while \pb{ }wants to minimize it.
 
-Let $N$ and $M$ be the set of valid decision rules respectively for \pa{ }and \pb:
+For any node $x$, define the possible transitions:
 \begin{align}
-  M = \{~ \mu:X_0 \to X ~;~ \forall x \in X_0,~ \mu(x) \in \{~ y;(x,y) \in E\} ~\},\\
-  N = \{~ \mu:X_1 \to X ~;~ \forall x \in X_1,~ \mu(x) \in \{~ y;(x,y) \in E\} ~\}.
+  \suc(x) = \{ ~y ; (x,y) \in E ~\}.
+\end{align}
+Let $N$ and $M$ be the set of decision rules respectively for \pa{ }and \pb:
+\begin{align}
+  M = \{~ \mu:X_0 \to X ~;~ \forall x \in X_0,~ \mu(x) \in \suc(x) ~\},\\
+  N = \{~ \mu:X_1 \to X ~;~ \forall x \in X_1,~ \mu(x) \in \suc(x) ~\}.
 \end{align}
 For any pair of decision rules $\mu \in M$ and $\nu \in N$, let $P_{\mu,\nu}$ be the corresponding transition matrix
 \begin{align}
@@ -88,63 +92,79 @@ Consider the following functions
 \end{align}
 ...
 
-The motivation for introducing the above total payoff game is the following simple observation:
+The motivation for introducing the total payoff game $\G'$ is the following simple observation:
 \begin{lemma}
-  Player $i$ can win the parity game $\G$ with priority $p$ from some starting node $x$ if and only if $|v_*(x)|=\infty$.
+  Player $i$ can win the parity game $\G$ with priority $p$ from some starting node $x$ if and only if $|v_*(x)|=\infty$ in the total payoff game $\G'$.
 \end{lemma}
 \begin{corollary}
-  Player $1-i$ can force Player $i$ to cycle on nodes with priorities lower than $p$ from some starting node $x$ if and only if $|v_*(x)|<\infty$.
+  Player $1-i$ can force Player $i$ to cycle on nodes with priorities lower than $p$ from some starting node $x$ if and only if $|v_*(x)|<\infty$ in the total payoff game $\G'$.
 \end{corollary}
 
 To provide an efficient algorithm for parity games, we shall need to deepen the above observation.
 For concreteness, assume from now on that the maximal priority $p$ is even (the odd case is similar). Therefore $i=0$ and for all $x$, $g(x) \in \{0,1\}$.
 
-Let $Y$ be the set of nodes from which \pb{ }can prevent \pa{ }to cycle infinitely often in nodes with parity $p$:
-\begin{align}
-Y = \left\{~ x \in X~;~  v_*(x)<\infty  ~\right\} = \left\{~ x \in X~;~  \exists \nu \in N,~ \forall \mu \in M,~ v_{\mu,\nu}(x)<\infty  ~\right\}
-\end{align}
-Let $F$ be the set of positional strategies by which \pb{ }can prevent \pa{ }to cycle infinitely often in nodes with parity $p$ from some starting node:
-\begin{align}
-F = \left\{~ \nu \in N ~;~ \exists x \in X,~ \forall \mu \in M,~ v_{\mu,\nu}(x)<\infty ~\right\}.
-\end{align}
-Let $Z$ be the set of nodes from which \pb{ }only visits nodes with parity (strictly) smaller than $p$:
+Let $Z$ be the set of nodes from which \pb{ }can ensure to visit only nodes with priority (strictly) smaller than $p$ in $\G$, that is nodes with cost $0$ in $\G'$.
 \begin{align}
 Z = \left\{ x \in X~;~ v_*(x)=0  \right\}. \label{Z}
 \end{align}
+It turns out that the $Z$ can be computed in a simple way:
+\begin{lemma}
+  The set $Z$ is equal to
+  \begin{align}
+    \left\{~ x \in X ~;~ [T^n 0](x) = 0 ~\right\}.
+  \end{align}
+\end{lemma}
+\begin{proof}
+  Call $Z'$ the set just described in the lemma.
+  First observe that the operator $T$ is monotone and $0 \le T 0$ (since costs are non-negative). Therefore, the sequence of functions $(T^k 0)_{k \ge 0}$ is non-decreasing. An immediate consequence is that $Z' \subset Z$.
+  Let us prove now that $Z \subset Z'$ by contradiction. Assume that some $x$ is in $Z$ but not in $Z'$, i.e, that $[T^n 0](x)=0$ and $v_*(x)>0$. This last inequality implies that \pa{ }has a strategy that can ensure, whatever the decisions of \pb, at least a cost of $1$ from $x$ (on the infinite play). Then, necessarily, \pa{ }can also obtain it in $j$ steps with $j \in [1,n]$, and thus $[T^n 0](x) \ge [T^j 0](x) > 0$, which is a contradiction.
+\end{proof}
 
-We shall provide an efficiently-computable characterization of the sets $Y$, $F$ and $Z$.
-Indeed, the set of strategies $F$ and the set $Y$ can be characterized as follows:
+Take a starting node $x$, Let us consider a positional strategy $\nu \in N$ that can ensure not to visit nodes with priority $p$ infinitely often in $\G$ from $x$, or equivalently not to visit nodes with cost $1$ infinitely often in $\G'$ from $x$. For such a strategy, we know that
+\begin{align}
+\max_{\mu \in M} v_{\mu,\nu}(x)< \infty.  
+\end{align}
+For any adversary $\mu \in M$, from $x$, the trajectory enters a cycle after $n$ steps, which is repeated infinitely often. Necessarily, all nodes of this cycle have cost $0$, i.e. they belong to the set $Z$. 
+
+If $Z$ is the empty set, then we know that the game $\G$ is won from all nodes with priority $p$.
+
+From now on, assume that $Z$ is non-empty. For every node belonging to \pb, define the following set of transitions:
+\begin{align}
+  \forall x \in X_1 \cap Z,~ N_x &= \{ y \in \suc(x) ~;~ y \in Z \},\\
+  \forall x \not\in  X_1 \cap Z,~ N_x & = \emptyset.
+\end{align}
+
+
+Let  $Y \supset Z$ be the set of nodes from which \pb{ }can prevent \pa{ }to cycle infinitely often in nodes with priority $p$:
+\begin{align}
+Y = \left\{~ x \in X~;~  v_*(x)<\infty  ~\right\} = \left\{~ x \in X~;~  \exists \nu \in N,~ \forall \mu \in M,~ v_{\mu,\nu}(x)<\infty  ~\right\}
+\end{align}
+For any $x \in Y$, Let $F_x$ be the set of  by which \pb{ }can prevent \pa{ }to cycle infinitely often in nodes with priority $p$ from some starting node:
+\begin{align}
+F_x = \left\{~ \nu \in N ~;~ \forall \mu \in M,~ v_{\mu,\nu}(x)<\infty ~\right\}.
+\end{align}
+The set of strategies $F_x$ and the set $Y$ can be characterized as follows:
 \begin{lemma}
   We have
   \begin{align}
-    F &= \{~ \nu \in N ~;~ \exists x \in X,~ \forall \mu \in M,~ \exists j \in [0,n],~ \exists y \in Z,~ \1_x (P_{\mu,\nu})^j = \1_y ~\},\\
+    F_x &= \{~ \nu \in N ~;~ \forall \mu \in M,~ \exists j \in [0,n],~ \exists y \in Z,~ \1_x (P_{\mu,\nu})^j = \1_y ~\},\\
     Y & = \{~ x \in X~;~ \exists \nu \in N ~;~ \forall \mu \in M,~ \exists j \in [0,n],~ \exists y \in Z,~ \1_x(P_{\mu,\nu})^j = \1_y ~\}.
   \end{align}
 \end{lemma}
 \begin{proof}
-  The characterization of $F$ is a consequence of the fact that after $j$ steps for some $j \in [0,n]$, the trajectory induced by $\mu$ and $\nu$ has necessarily entered its limiting cycle, that necessarily has value 0 (otherwise it would contradict the definition of $F$). The characterization of $Y$ is a consequence of that of $F$.
+  The characterization of $F_x$ is a consequence of the fact that after $j$ steps for some $j \in [0,n]$, the trajectory induced by $\mu$ and $\nu$ has necessarily entered its limiting cycle, that necessarily has value 0 (otherwise it would contradict the definition of $F_Y$). The characterization of $Y$ is a consequence of that of $F_Y$.
 \end{proof}
-In the parity game literature, $Y$ is called the \emph{$1$-attractor set of $Z$}. Given $Z$, $Y$ and $F$ can be computed in $n$ steps as follows:
+In the parity game literature, $Y$ is called the \emph{$1$-attractor set of $Z$}. Given $Z$, $Y$ and $F_Y$ can be computed in $n$ steps as follows:
 
 ...
 
-In particular, we can observe that $F$ is a rectangular set.
+In particular, we can observe that $F_Y$ is a rectangular set.
 
-Eventually, it turns out that the set $Z$ can also be characterized in a simple way:
-\begin{lemma}
-  The set $Z$ is equal to
-  \begin{align}
-    Z' = \left\{~ x \in X ~;~ [T^n 0](x) = 0 ~\right\}.
-  \end{align}
-\end{lemma}
-\begin{proof}
-  First observe that the operator $T$ is monotone and $0 \le T 0$ (since costs are non-negative). Therefore, the sequence of functions $(T^k 0)_{k \ge 0}$ is non-decreasing. An immediate consequence is that $Z' \subset Z$.
-  Let us prove now that $Z \subset Z'$. Assume that $v_*(x)>0$ for some $x$. Then this implies that Player 0 has a strategy that can obtain at least a cost of $1$ from $x$ (on the infinite play). Then, necessarily, \pa{ }can also obtain it in $j$ steps with $j \in [1,n]$, and thus $[T^n 0](x) \ge [T^j 0](x)>0$.
-\end{proof}
+
 
 \section{An algorithm for the parity game}
 
-\paragraph{Terminal condition:} If the game $\G$ only contains only one priority $p$, then we know that for all nodes, the optimal parity is $q$.
+\paragraph{Terminal condition:} If the game $\G$ only contains only one priority $p$, then we know that for all nodes, the optimal priority is $q$.
 \paragraph{Recursion} When the game $\G$ has at least two different priorities, let $p$ be the maximal priority and let $i \equiv p \mod 2$ be the corresponding player. 
 Let us consider the sub-problem whether Player $i$ can win the game with priority $p$ or whether Player $1-i$ can force Player $i$ to cycle in nodes with priorities (strictly) lower than $p$ (Player $1-i$ may win or lose, but if he loses, it will be with a priority lower than $p$). This sub-problem can be cast as a mean payoff game $\G'=(X,~ E,~ w)$ with cost function:
 \begin{align}
@@ -152,7 +172,7 @@ Let us consider the sub-problem whether Player $i$ can win the game with priorit
 \end{align}
 
 
-We recursively solve the parity game restricted to the set $A$, i.e. the game $\G \backslash (B \cup C)$, a game which only contains priorities (strictly) lower than $p$, i.e. obtain for each node $x \in A$ its optimal parity $p_*(x)$. From this, we can propagate ? this optimal priority from $A$ to $B$ by iterating (at most $n$ times):
+We recursively solve the parity game restricted to the set $A$, i.e. the game $\G \backslash (B \cup C)$, a game which only contains priorities (strictly) lower than $p$, i.e. obtain for each node $x \in A$ its optimal priority $p_*(x)$. From this, we can propagate ? this optimal priority from $A$ to $B$ by iterating (at most $n$ times):
 \begin{align}
   \forall x \in X_0 \cap B, ~~ p_*(x) &= \max_{y;(x,y)\in E} p_*(y), \\
   \forall x \in X_1 \cap B, ~~ p_*(x) &= \min_{y;(x,y)\in E} p_*(y),
