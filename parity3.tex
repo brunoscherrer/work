@@ -1,0 +1,170 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+\usepackage{natbib}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{corollary}{Corollary}
+
+\title{A polynomial algorithm for the parity game}
+
+\author{Bruno Scherrer\footnote{INRIA, Universit\'e de Lorraine, bruno.scherrer@inria.fr}}
+
+
+\def\1{{\mathds 1}}
+\def\N{\mathbb N}
+\def\R{\mathbb R}
+\def\Q{\mathbb Q}
+\def\G{{\cal G}}
+\def\v{\overline v}
+\def\pa{Player~0}
+\def\pb{Player~1}
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  ...
+\end{abstract}
+
+
+For any integers $i \le j$, write $[i,j]$ for the set of integers $\{i,i+1,\dots,j\}$.
+
+A parity game between two players, \pa{ }and \pb, can be described by a tuple $\G=(X=[1,n]=X_0 \sqcup X_1,~ E=[1,m],~ \Omega:X \to [1,d])$ with $(n,m,d) \in \N^3$.
+$(X,E)$ is a directed graph. $X$ is a set of $n$ nodes and $E$ a set of $m$ directed edges such that each node has at least one successor node. 
+The set of nodes  $X$ is partitioned into a set of nodes $X_0$ belonging to \pa{ }and a set of nodes $X_1$ belonging to \pb. The function $\Omega:X \to [1,d]$ assigns an integer label called priority to each node of the graph.
+A play is an infinitely long trajectory $(x_0,x_1,\dots)$ generated from some starting node $x_0$: at any time step $t$, the player to which the node $x_t$ belongs chooses $x_{t+1}$ among any of the outgoing edges of $E$ starting from $x_t$. The winner of the game is decided from the infinte sequence of priorities $(\Omega(x_0),\Omega(x_1),\dots)$ occuring through the play: if the highest priority occurring infinitely often is even (resp. odd), then \pa{ }(resp. \pb) wins.
+
+It is known (cf. \citet{zielonka98}) that there exist optimal strategies that are positional (i.e. that are mapping from nodes to outgoing edges). In particular, when both players follow these positional strategies from some node $x_0$, the play follows a (potentially empty) path followed by an infinitely-repeated cycle $(x_1,\dots,x_{c(x_0)})$ for some $c(x_0) \in [1,n]$.
+
+The goal of this paper is to describe a polynomial algorithm for computing optimal strategies for both players.
+
+
+\section{An incremental procedure}
+
+Consider a parity game $\G$ that has at least two different priorities. Let $p$ be the maximal priority and let $i \equiv p \mod 2$ be the corresponding player. 
+In this section, we shall consider the sub-problem whether Player $i$ can win the game with priority $p$ or whether Player $1-i$ can force Player $i$ to cycle in nodes with priorities (strictly) lower than $p$ (in $\G$, Player $1-i$ may win or lose, but if he loses, it will be with a priority lower than $p$).
+
+Consider the total payoff game $\G'=(X,~ E,~ g)$ with cost function
+\begin{align}
+  \forall x,~ g(x) = (-1)^p \1_{\Omega(x)=p},
+\end{align}
+in which \pa{ }wants to maximize the total cost on induced infinitely-long trajectories while \pb{ }wants to minimize it.
+
+Let $N$ and $M$ be the set of valid decision rules respectively for \pa{ }and \pb:
+\begin{align}
+  M = \{~ \mu:X_0 \to X ~;~ \forall x \in X_0,~ \mu(x) \in \{~ y;(x,y) \in E\} ~\},\\
+  N = \{~ \mu:X_1 \to X ~;~ \forall x \in X_1,~ \mu(x) \in \{~ y;(x,y) \in E\} ~\}.
+\end{align}
+For any pair of decision rules $\mu \in M$ and $\nu \in N$, let $P_{\mu,\nu}$ be the corresponding transition matrix
+\begin{align}
+  \forall x \in X_0,~ \forall y \in X,~ P_{\mu,\nu}(x,y) &= \1_{y=\mu(x)}, \\
+  \forall x \in X_1,~ \forall y \in X,~ P_{\mu,\nu}(x,y) &= \1_{y=\nu(x)}.
+\end{align}
+Consider the Bellman operators associated to this total payoff game:
+\begin{align}
+  T_{\mu,\nu}v &= g + P_{\mu,\nu}v,\\
+%  T_{\mu}v & = \min_{\nu \in N} T_{\mu,\nu}v,\\
+%  \tilde T_{\nu}v & = \max_{\mu \in M} T_{\mu,\nu}v,\\
+  T v & = \max_{\mu \in M} \min_{\nu \in N}\tilde T_{\mu,\nu}v.
+\end{align}
+Consider the following functions
+\begin{align}
+  v_{\mu,\nu} &= \lim_{k \to \infty}(T_{\mu,\nu})^k0, \\
+%  v_{\mu} &= \lim_{k \to \infty}(T_{\mu})^k0, \\
+%  \tilde v_{\mu} &= \lim_{k \to \infty}(\tilde T_{\nu})^k0, \\
+  v_* &= \lim_{k \to \infty}T^k0.
+\end{align}
+...
+
+The motivation for introducing the above total payoff game is the following simple observation:
+\begin{lemma}
+  Player $i$ can win the parity game $\G$ with priority $p$ from some starting node $x$ if and only if $|v_*(x)|=\infty$.
+\end{lemma}
+\begin{corollary}
+  Player $1-i$ can force Player $i$ to cycle on nodes with priorities lower than $p$ from some starting node $x$ if and only if $|v_*(x)|<\infty$.
+\end{corollary}
+
+To provide an efficient algorithm for parity games, we shall need to deepen the above observation.
+For concreteness, assume from now on that the maximal priority $p$ is even (the odd case is similar). Therefore $i=0$ and for all $x$, $g(x) \in \{0,1\}$.
+
+Let $Y$ be the set of nodes from which \pb{ }can prevent \pa{ }to cycle infinitely often in nodes with parity $p$:
+\begin{align}
+Y = \left\{~ x \in X~;~  v_*(x)<\infty  ~\right\} = \left\{~ x \in X~;~  \exists \nu \in N,~ \forall \mu \in M,~ v_{\mu,\nu}(x)<\infty  ~\right\}
+\end{align}
+Let $F$ be the set of positional strategies by which \pb{ }can prevent \pa{ }to cycle infinitely often in nodes with parity $p$ from some starting node:
+\begin{align}
+F = \left\{~ \nu \in N ~;~ \exists x \in X,~ \forall \mu \in M,~ v_{\mu,\nu}(x)<\infty ~\right\}.
+\end{align}
+Let $Z$ be the set of nodes from which \pb{ }only visits nodes with parity (strictly) smaller than $p$:
+\begin{align}
+Z = \left\{ x \in X~;~ v_*(x)=0  \right\}.
+\end{align}
+
+We shall provide an efficiently-computable characterization of the sets $Y$, $F$ and $Z$.
+Indeed, the set of strategies $F$ and the set $Y$ can be characterized as follows:
+\begin{lemma}
+  We have
+  \begin{align}
+    F &= \{~ \nu \in N ~;~ \exists x \in X,~ \forall \mu \in M,~ \exists j \in [0,n],~ \exists y \in Z,~ \1_x (P_{\mu,\nu})^j = \1_y ~\},\\
+    Y & = \{~ x \in X~;~ \exists \nu \in N ~;~ \forall \mu \in M,~ \exists j \in [0,n],~ \exists y \in Z,~ \1_x(P_{\mu,\nu})^j = \1_y ~\}.
+  \end{align}
+\end{lemma}
+\begin{proof}
+  The characterization of $F$ is a consequence of the fact that after $j$ steps for some $j \in [0,n]$, the trajectory induced by $\mu$ and $\nu$ has necessarily entered its limiting cycle, that necessarily has value 0 (otherwise it would contradict the definition of $F$). The characterization of $Y$ is a consequence of that of $F$.
+\end{proof}
+In the parity game literature, $Y$ is called the \emph{$1$-attractor set of $Z$}. Given $Z$, $Y$ and $F$ can be computed in $n$ steps as follows:
+...
+In particular with can observe that $F$ is a rectangular set.
+
+Eventually, it turns out that the set $Z$ can also be characterized in a simple way:
+\begin{lemma}
+  \begin{align}
+    Z = \left\{~ x \in X ~;~ [T^n 0](x) = 0 ~\right\}.
+  \end{align}
+\end{lemma}
+\begin{proof}
+Assume that $v_*(x)>0$ for some $x$. Then this implies that Player 0 has a strategy that can obtain at least a cost of $1$ from $x$ (on the infinite play). Then, necessarily, \pa{ }can obtain it in $j \in [1,n]$, and thus $[T^jj 0](x)>0$. The result is obtained by obersving that the operator $T$ is monotone and $0 \le T 0$ (since costs are non-negative).
+\end{proof}
+
+\section{An algorithm for the parity game}
+
+\paragraph{Terminal condition:} If the game $\G$ only contains only one priority $p$, then we know that for all nodes, the optimal parity is $q$.
+\paragraph{Recursion} When the game $\G$ has at least two different priorities, let $p$ be the maximal priority and let $i \equiv p \mod 2$ be the corresponding player. 
+Let us consider the sub-problem whether Player $i$ can win the game with priority $p$ or whether Player $1-i$ can force Player $i$ to cycle in nodes with priorities (strictly) lower than $p$ (Player $1-i$ may win or lose, but if he loses, it will be with a priority lower than $p$). This sub-problem can be cast as a mean payoff game $\G'=(X,~ E,~ w)$ with cost function:
+\begin{align}
+  \forall x,~ g(x) = (-1)^p \1_{p(x)=p}.
+\end{align}
+
+
+
+We recursively solve the parity game restricted to the set $A$, i.e. the game $\G \backslash (B \cup C)$, a game which only contains priorities (strictly) lower than $p$, i.e. obtain for each node $x \in A$ its optimal parity $p_*(x)$. From this, we can propagate ? this optimal priority from $A$ to $B$ by iterating (at most $n$ times):
+\begin{align}
+  \forall x \in X_0 \cap B, ~~ p_*(x) &= \max_{y;(x,y)\in E} p_*(y), \\
+  \forall x \in X_1 \cap B, ~~ p_*(x) &= \min_{y;(x,y)\in E} p_*(y),
+\end{align}
+where the max and min operators above use the order relation $\preceq$ on priorities:
+\begin{align}
+  p \prec p' \Leftrightarrow (-2)^{p}<(-2)^{p'}.  
+\end{align}
+As there is only one recursive call, and as the maximal priority necessarily decreases at each iteration, the above procedure takes at most $d$ iterations, and
+\begin{theorem}
+A parity game can be solved in polynomial time.
+\end{theorem}
+
+
+\bibliographystyle{plainnat}
+\bibliography{biblio.bib} 
+
+\end{document}

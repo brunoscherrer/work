@@ -51,6 +51,7 @@ A \emph{mean-payoff game} between two players, \pa{ }and \pb, can be described b
 For both games, it is known (cf. \citet{zielonka98}, \citet{ehrenfeucht79}) that there exist optimal strategies that are positional (i.e. that are mapping from nodes to outgoing edges). In particular, when both players follow these positional strategies from some node $x_0$, the play follows a (potentially empty) path followed by an infinitely-repeated cycle $(x^*_1,\dots,x^*_{c(x_0)})$ for some $c(x_0) \in [1,n]$.
 
 
+
 \section{Mean payoff game with costs in $\{0,1\}$}
 
 Before we consider parity games, we shall spend some time on the specific class of mean payoff games where the costs all belong to $\{0,1\}$. Let $\v:X \to \Q$ be the value of such a mean-payoff game. For any starting state $x$, the value $\v(x)$ from node $x$ necessarily has the form $\frac{a}{b}$ for some $0 \le a \le b \le n$. In this context the aim of this section is to describe a computationnally efficient characterizaton of 1) the set of nodes $x$ for which \pb{ }can ensure that $\v(x)>0$ and 2) the \emph{set of policies} such that \pa{ }can ensure that the mean-payoff is $0$. To do this, we shall focus on the closely related total cost of the $h$-horizon payoff game, played on the same graph with the same cost function, but with a finite duration $h$. We begin by a bit of terminology for this setting.
