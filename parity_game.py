@@ -201,7 +201,7 @@ class parity_game:
         for k in all_states:
             v[k]=0
 
-        for t in range(n*n):
+        for t in range(n):
             v2 = dict()
             for state in g.states:
                 k = state.nb
@@ -236,12 +236,13 @@ class parity_game:
         
         # Compute Y and mark the win with priority p on Yc
         
-        Yc = set()
-        for state in self.states:
-            if abs(v[state.nb])>=n:
-                Yc.add(state.nb)
+        #Yc = set()
+        #for state in self.states:
+        #    if abs(v[state.nb])>=n:
+        #        Yc.add(state.nb)
         #Yc = self.attractor(i,Yc)
-        Y = all_states.difference(Yc)
+        Y = self.attractor(1-i,Z)
+        Yc = all_states.difference(Y)
         
         if verbose:
             print("Y=",Y)
@@ -269,15 +270,16 @@ class parity_game:
                 
         for t in range(n): 
             for state in self.states:
-                if state.nb in Y and state.nb not in Z:
-                    w = [ P[x] for x in state.next_states ] # optimal priorities of next states
-                    if state.priority==i:
-                        if None not in w:     # If i is not forced to choose, he does not  
+                if state.nb not in Z:#state.nb in Y and state.nb not in Z:
+                    w = [ P[x] for x in state.next_states if P[x]!=None] # optimal priorities of next states
+                    if w!=[]:
+                        if state.player==0:
+                            #if None not in w:     # If i is not forced to choose, he does not  
                             P[state.nb] = priority_max(w)
-                    else: # state.priority==1-i
-                        while None in w:
-                            w.remove(None)
-                        if w!=[]:
+                        else: # state.priority==1-i
+                            #while None in w:
+                            #w.remove(None)
+                            #if w!=[]:
                             P[state.nb] = priority_min(w)
                 
         return P
