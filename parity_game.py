@@ -163,7 +163,7 @@ class parity_game:
     # ALGORITHM
     # returns a dict with "optimal priorities"              
 
-    def solve(self, verbose=True): 
+    def solve(self, txt="", verbose=True): 
         
         all_priorities = set ( [ state.priority for state in self.states ] )
         all_states = set( [ state.nb for state in self.states ] )
@@ -173,9 +173,9 @@ class parity_game:
         i = p%2
 
         if verbose:
-            print("Game:")
+            print(txt+"Game:")
             self.print()
-            print("* Max priority",p,players[i])
+            print(txt+"* Max priority",p,players[i])
         
         if p==min( [state.priority for state in self.states  ] ): # only one priority
             P=dict()
@@ -194,14 +194,14 @@ class parity_game:
                 state.priority=0
 
         if verbose:
-            print("Total payoff game:")
+            print(txt+"Total payoff game:")
             g.print()
                 
         v = dict()
         for k in all_states:
             v[k]=0
 
-        for t in range(n):
+        for t in range(n*n):
             v2 = dict()
             for state in g.states:
                 k = state.nb
@@ -213,74 +213,54 @@ class parity_game:
             v = v2
 
         if verbose:
-            print(v)
-            
-        # Compute the set Z
+            print(txt+"v_{n^2}=",v)
+
+        # Compute the sets Z (with value 0) and the set Y (with value>n)
             
         Z = set()
+        Y = set()
         for k in v:
             if v[k]==0:
                 Z.add(k)
-
-        if Z==set(): # game won with priority p
-            if verbose:
-                print("Z is empty!")
-
-            P = dict()
-            for k in all_states:
-                P[k]=p
-            return P
+            elif abs(v[k])>=n:
+                Y.add(k)
 
         if verbose:
-            print("Z=",Z)
-        
-        # Compute Y and mark the win with priority p on Yc
-        
-        #Yc = set()
-        #for state in self.states:
-        #    if abs(v[state.nb])>=n:
-        #        Yc.add(state.nb)
-        #Yc = self.attractor(i,Yc)
-        Y = self.attractor(1-i,Z)
-        Yc = all_states.difference(Y)
-        
-        if verbose:
-            print("Y=",Y)
-            print("States won with priority",p,":",Yc)
-        
-        # Recursive call on Z
-        
-        Zc = all_states.difference(Z)
-        g2 = self.copy_and_remove(Zc)
-        P = g2.solve(verbose)   
-
-        if verbose:
-            print("After recursive call: P=",P)
-
-        # mark won states
+            print(txt+"{x,|v(x)|>=n}=",Y)
+            print(txt+" {x,v(x)=0} = ",Z)
             
-        for k in Yc:
-            P[k]=p
+        
+        # Potential recursive call on Z
+        if Z!=set():
+            Zc = all_states.difference(Z)
+            g2 = self.copy_and_remove(Zc)
+            P2 = g2.solve(txt+"  ",verbose)   
+
+        # Mark provisional priorities
+
+        P = dict()
+        for state in self.states:
+            k=state.nb
+            if k in Y:
+                P[k]=p
+            elif k in Z:
+                P[k]=P2[k]
+            else:
+                P[k]=None
+        
+        if verbose:
+            print(txt+"Provisional priorities:",P)
             
         # Propagation on Y
-
-        for x in Y:
-            if x not in P:
-                P[x] = None
                 
         for t in range(n): 
             for state in self.states:
-                if state.nb not in Z:#state.nb in Y and state.nb not in Z:
-                    w = [ P[x] for x in state.next_states if P[x]!=None] # optimal priorities of next states
-                    if w!=[]:
-                        if state.player==0:
-                            #if None not in w:     # If i is not forced to choose, he does not  
-                            P[state.nb] = priority_max(w)
-                        else: # state.priority==1-i
-                            #while None in w:
-                            #w.remove(None)
-                            #if w!=[]:
-                            P[state.nb] = priority_min(w)
+                w = [ P[x] for x in state.next_states if P[x]!=None] # optimal priorities of next states
+                if w!=[]:
+                    if state.player==0:
+                        P[state.nb] = priority_max(w)
+                    else: 
+                        P[state.nb] = priority_min(w)
                 
         return P
     

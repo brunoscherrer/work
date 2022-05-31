@@ -26,26 +26,22 @@ In this short note, I describe a roadmap in order to prove that a parity game ca
 \paragraph{1) Extension of parity game}
 
 The goal is made more precise. Both players, if they lose, want to make the priority of the other player as low as possible. 
-This precisely define an optimal parity. This problem can be reduced to MPG through a Puri like reduction.
-Also we want to add a neutral priority (corresponding to 0 in the MPG reduction).
+This precisely define an optimal priority. This problem can be reduced to MPG through a Puri like reduction.
 
 \paragraph{2) Algorithm}
 
 Let $p$ be the highest priority. Let $i$ be the corresponding player. Consider the parity game of which priorities smaller than $p$ are made neutral.
 This can be translated to a mean payoff game with only two cost values: 0 and 1, which I believe can be partly ``solved'' efficiently (with at most $n^2$ steps of Value Iteration)
 
-Consider the total value in this mean payoff game. There are 3 kinds of states:
-\begin{enumerate}
-  \item  states with infinite value (they are won by $i$)
-\item  states with finite values (they are won by $1-i$) among which:
-  \begin{enumerate}
-  \item states with value $0$
-  \item states with value between $1$ and $n-1$.
-  \end{enumerate}
-\end{enumerate}
-Starting from $v=0$, which is such that $v \ge Tv$, the value is non-decreasing.
+Consider the total value in this mean payoff game. Let
+\begin{align}
+  A &= \{ x ~;~ v(x)=\infty \} \\
+  B &= \{ x ~;~ \Omega(x)=p \}
+\end{align}
+We then solve $G\(A \cup B)$ and obtain $p_*(x)$ for all $x$ not in $A \cup B$.
+We know that $p_*(x)=p$ for all $x$ in A. It remains to propagate the information on the nodes for which we do not know the optimal priority ($B$, plus nodes that may 
 
 
-Algorithm: Identify the three sets 1, 2-a and 2-b. Mark values of 1. Call recursively the algorithm on 2-a, propagate obtained values on 2-a. 
+
 
 \end{document}
