@@ -1,0 +1,90 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+
+\title{Algorithme polynomial pour les points fixes de fonctions max-affines}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Problème}
+
+On considère un système de type point fixe défini par un opérateur max-affine sur $\mathbb{R}^n$ :
+\begin{equation}\label{eq:pointfixe}
+x_i = \max_{k \in K_i} [T^{(k)} x]_i, \quad i = 1,\dots,n,
+\end{equation}
+où pour tout $k$ et $y \in \mathbb{R}^n$, $T^{(k)}y$ est une fonction affine :
+\begin{equation}
+[T^{(k)} y]_i = \sum_{j=1}^n a_{ij}^{(k)} y_j + b_i^{(k)}.
+\end{equation}
+
+L'objectif est de déterminer l'ensemble $X^*$ des solutions de \eqref{eq:pointfixe}, éventuellement vide.
+
+---
+
+\section{Reformulation comme programme linéaire}
+
+Considérons le problème d'optimisation suivant :
+\begin{equation}\label{eq:lp}
+\begin{aligned}
+\min_{x \in \mathbb{R}^n} &\quad \max_{i,k \in K_i} \big(x_i - [T^{(k)} x]_i\big)\\
+\text{sous les contraintes } &\quad x_i \ge [T^{(k)} x]_i, \quad \forall i,k.
+\end{aligned}
+\end{equation}
+
+En introduisant une variable $z$, ce problème peut être écrit comme un programme linéaire classique :
+\begin{equation}
+\begin{aligned}
+\min & \quad z \\
+\text{sous les contraintes } & \quad x_i - [T^{(k)} x]_i \le z, \quad \forall i,k,\\
+& \quad x_i - [T^{(k)} x]_i \ge 0, \quad \forall i,k.
+\end{aligned}
+\end{equation}
+
+Ainsi, \eqref{eq:lp} peut être résolu efficacement avec des algorithmes de programmation linéaire.
+
+---
+
+\section{Algorithme pour déterminer $X^*$}
+
+L'idée clé est d'utiliser l'optimisation pour identifier et supprimer les contraintes impossibles, ce qui conduit à un algorithme polynomial.
+
+\begin{enumerate}
+\item Initialiser les ensembles $K_i$.
+\item Répéter :
+\begin{enumerate}
+    \item Résoudre le programme linéaire \eqref{eq:lp} et noter la solution optimale $(x^\dag, z)$ ainsi que l'indice $(i^\dag,k^\dag)$ correspondant à la contrainte la plus violée.
+    \item Si $z = 0$, alors $x^\dag$ est une solution du système \eqref{eq:pointfixe} pour les ensembles $K_i$ restants. L'algorithme peut s'arrêter.
+    \item Si $z > 0$, alors aucune solution $x^* \in X^*$ ne peut satisfaire la contrainte $(i^\dag,k^\dag)$ à l'égalité. On peut donc supprimer $k^\dag$ de $K_{i^\dag}$ sans perdre de solutions.
+    \item Si pour un certain $i$, $K_i$ devient vide, alors $X^* = \emptyset$ (pas de solution).
+\end{enumerate}
+\item Répéter jusqu'à convergence.
+\end{enumerate}
+
+\paragraph{Remarques.} 
+\begin{itemize}
+\item L'algorithme s'arrête après au plus $\sum_i |K_i| - n$ étapes, car à chaque itération au moins un élément de $K_i$ est supprimé.
+\item À la fin de l'élagage, l'ensemble $X^*$ est donné par toutes les solutions du système linéaire combinatoire :
+\[
+x_i = [T^{(k_i)} x]_i, \quad k_i \in K_i \text{ (ensembles réduits)}.
+\]
+\item Chaque étape consiste en la résolution d'un programme linéaire de taille $O(n \cdot \sum_i |K_i|)$, donc l'ensemble de l'algorithme est polynomial.
+\end{itemize}
+
+---
+
+\section{Conclusion}
+
+Cet algorithme fournit une procédure efficace pour déterminer l'ensemble de solutions de points fixes pour les fonctions max-affines. Il repose sur une combinaison de :
+
+\begin{itemize}
+\item reformulation comme programme linéaire,
+\item identification des contraintes impossibles via l'optimisation,
+\item élagage progressif des ensembles $K_i$.
+\end{itemize}
+
+La méthode garantit l'arrêt en nombre fini d'itérations et permet de conclure soit à l'existence, soit à l'absence de solutions.
+
+\end{document}

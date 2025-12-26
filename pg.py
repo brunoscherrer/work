@@ -8,8 +8,6 @@ from random import seed, randint, sample
 from copy import deepcopy
 import numpy as np
 
-# 
-
 players=['EVEN','ODD '] # player 0 is Eve (wants even), player 1 is Adam (wants odd)
 
 
@@ -76,12 +74,14 @@ class parity_game:
         attr = U.copy()
 
         while( attr != oldattr ):
-
+            
             oldattr = attr.copy()
             
             for state in self.states:
+                
                 if state.player==i:
                     for j in state.next_states:
+                
                         if j in attr:
                             attr.add(state.nb)
                             break
@@ -118,22 +118,20 @@ class parity_game:
 
         return g
     
-        
+    
     def solve_zielonka(self):  # Zielonka's algorithm
         
-        all_priorities = set ( [ state.priority for state in self.states ] )
+        if self.states==[]:
+            W = [ set(), set() ]
+            return W
+        
         all_states = set( [ state.nb for state in self.states ] )
+        all_priorities = set ( [ state.priority for state in self.states ] )       
         
         p = max(all_priorities)
 
         i = p%2
         
-        if p==min( [state.priority for state in self.states  ] ):
-
-            W = [ set(), set() ]
-            W[i] = all_states
-            return W
-
         U = set ( [ state.nb  for state in self.states if state.priority==p ] )
         A = self.attractor(i, U)
         if A==all_states:
@@ -142,8 +140,9 @@ class parity_game:
             return W
 
         g2 = self.copy_and_remove(A)
-        W2 = g2.solve_zielonka()
 
+        W2 = g2.solve_zielonka()
+        
         if W2[1-i] == set():
 
             W = [ set(), set() ]
@@ -165,42 +164,38 @@ class parity_game:
         return W
 
 
-    # ALGORITHM optimal priority (through Zielonka)
+    
+
+    # ALGORITHM optimal priority
 
     def optimal_priority(self, pmax=np.infty, txt="", verbose=False): 
-        
-        all_priorities = set ( [ state.priority for state in self.states  if state.priority<=pmax ] )
+
+        if self.states==[]:
+            return dict()
+
         all_states = set( [ state.nb for state in self.states ] )
+        all_priorities = set ( [ state.priority for state in self.states  if state.priority<=pmax ] )
+       
         n = len(all_states)
         
         p = max(all_priorities)
         i = p%2
-
-        P = dict()
         
         if verbose:
             print(txt+"Game:")
             self.print()
             print(txt+"* Max priority",p,players[i])
 
-        # terminal condition
-
-        if p==min( all_priorities ): # only one priority
-
-            for s in all_states:
-                P[s]=p
-
-            return P
-
         # solve the (p, <=p-1) parity game
-        
+
         g = deepcopy(self)
         for state in g.states:
             if state.priority<p:
                 state.priority=p-1
 
-        W = g.solve_zielonka()
+        W = g.solve_zielonka()    
 
+        P = dict()
         for s in W[i]:
             P[s]=p
 
@@ -214,152 +209,51 @@ class parity_game:
             P[s]=P2[s]
 
         return P
-        
 
+    
+    def solve(self, txt="", verbose=False): 
 
-    def solve(self, txt="", verbose=True):
+        if self.states==[]:
+            return dict()
 
-        all_priorities = set ( [ state.priority for state in self.states ] )
         all_states = set( [ state.nb for state in self.states ] )
+        all_priorities = set ( [ state.priority for state in self.states  ] )
+       
         n = len(all_states)
         
         p = max(all_priorities)
         i = p%2
-
-        W = [ set(), set() ]
         
         if verbose:
-            print(txt+"Game to solve:")
-            self.print(txt)
+            print(txt+"Game:")
+            self.print()
             print(txt+"* Max priority",p,players[i])
 
-        # Terminal condition
-        
-        if p==min( all_priorities ): # only one priority
+        # solve the (p, <=p-1) parity game
 
-            W[i]=all_states
-            if verbose:
-                print(txt+"Terminal condition 1 with W =",W)
-            return W
-
-        # Form and solve the (p, <=p-1) parity game
-        
-        g2 = deepcopy(self)
-
-        for state in g2.states:
+        g = deepcopy(self)
+        for state in g.states:
             if state.priority<p:
                 state.priority=p-1
-        
-        W2 = g2.solve_zielonka()
-        A = W2[i]
 
-        if verbose:
-            print(txt+"A =",A)
-        
+        W = g.solve_zielonka()
+            
+        P = dict()
+        for s in A:
+            P[s]=p
+
         if A==all_states:
-            W[i]=A
-            return W
-
-        g2 = g2.copy_and_remove(A)
-        
-        
-        for state in g2.states:
-            if state.priority==p:
-                state.priority=[1,-1][i]
-            else:
-                state.priority=0
-                
-        # Find the limiting cycles with value 0
-
-        C = set()
-        
-        while True:
-
-            all_states2 = set( [ state.nb for state in g2.states ] )
-
-            N = n
-            v = dict()
-            for state in g2.states:
-                v[state.nb]=0
-
-            for t in range(N):
-                v2 = v.copy()
-                for state in g2.states:
-                    l = [ v2[s2] for s2 in state.next_states ]
-                    if state.player==0: # EVEN/MAX
-                        v[state.nb] = state.priority + max(l)
-                    else: # ODD/MIN
-                        v[state.nb] = state.priority + min(l)
-
-
-            B = set( [ i for i in all_states2 if v[i]==0 ] )
-            C = C.union(B)
+            return P
             
-            if verbose:
-                print(txt+"B =",B)
+        g2 = self.copy_and_remove(A)
+        P2 = g2.solve(txt="  "+txt,verbose=verbose)
 
-            D = g2.attractor(1-i,B)
-            if D==all_states2:
-                break
+        for s in P2:
+            P[s]=P2[s]
 
-            g2 = g2.copy_and_remove(D)
+        return P
 
-        if verbose:
-            print("C =",C)
-                
-        # Terminal condition 2
-                        
-        Cc = all_states.difference(C)
-        g3 = self.copy_and_remove(Cc)
 
-        W3 = g3.solve_zielonka() # for testing
-        #        W3 = g3.solve(txt+"   ",verbose)
-
-        if verbose:
-            print(txt+"W3 =",W3)
-            
-        # propagation on from C to G4
-
-        if verbose:
-            print(txt+"Propagation")
-
-        g4 = deepcopy(self)
-        g4 = g4.copy_and_remove(A)
-            
-        v = dict()
-        for state in g4.states:
-            if state.nb in W3[i]:
-                v[state.nb]=[1,-1][i]
-            elif state.nb in W3[1-i]:
-                v[state.nb]=[-1,1][i]
-            else:
-                v[state.nb]=0
-            
-        while True:
-            if verbose:
-                print(txt,v)
-            v2 = v.copy()
-            for state in g4.states:
-                if state.nb not in C:
-                    l = [ v2[s2] for s2 in state.next_states if v2[s2] in [-1,1] ]
-                    while 0 in l:
-                        l.remove(0)
-                    if l!=[]:
-                        if state.player==0: # EVEN/MAX
-                            v[state.nb] = max(l)
-                        else: # ODD/MIN
-                            v[state.nb] = min(l)
-            if v==v2:
-                break
-                        
-        W[0] = set( [ s for s in v if v[s]==1 ] ) 
-        W[1] = set( [ s for s in v if v[s]==-1 ] )
-        W[i] = W[i].union(A)
-        
-        if verbose:
-            print(txt+"Return W =",W)
-        
-        return W
 
 
     
@@ -369,33 +263,37 @@ n=3
 a=2
 d=n
 
+t1,t2=0,0
 
-for i in range(0,10000):
+for i in range(0,1000):
 
     seed(i)
     g = parity_game(n,a,d)
-    
-    print("* Seed=",i)    
-    g.print()
-    
+    #        print(i)
+    #        g.print()
+
+    count=0
     W = g.solve_zielonka()
-    print("Solution (Zielonka):",W,"\n")
-    
+    t1+=count
+
+    count=0
     P2 = g.optimal_priority()
+    t2+=count
     W2 = [ set(), set() ]
     for i in range(n):
         W2[ P2[i]%2 ].add(i)
-    
-    print("Solution (optimal priority):",P2,W2,"\n\n")
-    
-    if W!=W2:
+
+    P3 = g.solve(verbose=True)
+
+    print("Solution (solve):",P3,"\n\n")
+
+    if P3!=P2:
+        print("* Seed=",i)    
+        g.print()
+        print("Solution (optimal priority):",P2)
+        print("Solution (solve):",P3,"\n\n")
         print("STOP")
         exit(1)
 
-    W3 = g.solve()
 
-    print("Solution (solve):",W3,"\n\n")
 
-    if W2!=W3:
-        print("STOP")
-        exit(1)

@@ -1,0 +1,70 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+
+\newtheorem{theorem}{Théorème}
+\newtheorem{lemma}{Lemme}
+\newtheorem{remark}{Remarque}
+
+
+\title{Un algorithme polynomial pour le calcul de point fixe d'un opérateur max-affine}
+
+\author{Bruno Scherrer\footnote{INRIA, bruno.scherrer@inria.fr}}
+
+
+\def\1{{\mathds 1}}
+\def\N{\mathbb N}
+\def\E{\mathbb E}
+\def\R{\mathbb R}
+\def\={\stackrel{def}{=}}
+
+
+\begin{document}
+\maketitle
+
+%\begin{abstract}
+%\end{abstract}
+
+
+On considère un système d'équation de type point fixe d'un opérateur max-affine:
+\begin{align}
+ x_i = \max_{k \in K_i} \sum_j A^{(k)}_{ij} x_j  + b^{(k)}_i
+\end{align}
+
+Le but de cette note est de décrire un algorithme polynomial pour trouver une solution $x^*$ à ce problème (ou montrer qu'il n'y en a pas).
+
+Considérons le problème d'optimisation
+\begin{align}
+  \min_{x \in \R^n} ~ \max_{i, k \in K_i} ~~ x_i-\sum_j A^{(k)}_{ij} x_j  + b^{(k)}_i \\
+  \mbox{sous les contraintes: }\forall i,~~ \forall k,~~ x_i \ge \sum_j A^{(k)}_{ij} x_j  + b^{(k)}_i
+\end{align}
+Il est facile de voir que c'est un programme linéaire.
+
+On peut tout d'abord observer que tout point fixe $x^*$ du problème, s'il existe, appartient à l'espace de faisabilité du programme linéaire ci-dessus.
+
+Soit $z$ l'optimum de ce problème et $(x^\dag,i^\dag,k^\dag)$ une solution optimale. 
+
+Si $z=0$, alors il est facile de voir que $x^\dag$ est solution du problème.
+
+Si $z>0$, alors on peut voir, par définition du problème d'optimisation, que
+\begin{align}
+  x^*_{i^\dag}-\sum_j A^{(k^\dag)}_{i^\dag j} x^*_j  + b^{(k^\dag)}_{i^\dag}  \ge x^\dag_{i^\dag}-\sum_j A^{(k^\dag)}_{i^\dag j} x^\dag_j  + b^{(k^\dag)}_{i^\dag}  = z > 0.
+\end{align}
+Autrement dit, le couple $(i^\dag,k^\dag)$ ne peut pas faire partie des contraintes optimales et on peut enlever l'indice $i^\dag$ de $K_i^\dag$.
+On a ainsi éliminé une contrainte et on recommence.
+
+Si à un moment donné, il existe un $i$ tel que $K_i$ est vide, alors cela montre que le problème de point fixe n'a pas de solution.
+
+
+
+\bibliographystyle{plain}
+\bibliography{biblio.bib} 
+
+\end{document}

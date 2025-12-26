@@ -17,30 +17,14 @@
 
 \begin{document}
 
-Bruno Scherrer, bruno.scherrer@inria.fr, April, 4th, 2022.
+Bruno Scherrer, bruno.scherrer@inria.fr, June, 2022.
 ~\\
 
 In this short note, I describe a roadmap in order to prove that a parity game can be solved in polynomial time along with an algorithm to do so.
 
-
-\paragraph{1) Extension of parity game}
-
-The goal is made more precise. Both players, if they lose, want to make the priority of the other player as low as possible. 
-This precisely define an optimal priority. This problem can be reduced to MPG through a Puri like reduction.
-
-\paragraph{2) Algorithm}
-
-Let $p$ be the highest priority. Let $i$ be the corresponding player. Consider the parity game of which priorities smaller than $p$ are made neutral.
-This can be translated to a mean payoff game with only two cost values: 0 and 1, which I believe can be partly ``solved'' efficiently (with at most $n^2$ steps of Value Iteration)
-
-Consider the total value in this mean payoff game. Let
-\begin{align}
-  A &= \{ x ~;~ v(x)=\infty \} \\
-  B &= \{ x ~;~ \Omega(x)=p \}
-\end{align}
-We then solve $G\(A \cup B)$ and obtain $p_*(x)$ for all $x$ not in $A \cup B$.
-We know that $p_*(x)=p$ for all $x$ in A. It remains to propagate the information on the nodes for which we do not know the optimal priority ($B$, plus nodes that may 
-
+Here is a simple procedure to find some winning region: let $p$ be the highest priority, $i$ the player.
+First consider the question whether player $i$ can win with priority $p$ (this is a 2 priority problem). If yes. We have a winning.
+If no, let $A$ be the set of states with priority $p$. Let $B$ be the $i$-attractor of $A$. If $B$ is the whole set of states, then we know that the game is won by $i$ with priority $p$. Otherwise, consider the game $G \backslash B$ (we know that it is won with priority stricly smaller than $p$). We repeat the procedure until one finds a $B$ that is the whole set of states: we thus have identified a set of states that are won with some priority $p'$.
 
 
 

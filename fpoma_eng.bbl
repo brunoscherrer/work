@@ -1,0 +1,26 @@
+\begin{thebibliography}{1}
+
+\bibitem{kojima}
+Masakazu Kojima, Nimrod Megiddo, Toshihito Noma, and Akiko Yoshise.
+\newblock A unified approach to interior point algorithms for linear
+  complementarity problems: A summary.
+\newblock {\em Oper. Res. Lett.}, 10:247--254, 1991.
+
+\bibitem{puri}
+Anuj Puri.
+\newblock {\em Theory of Hybrid Systems and Discrete Event Systems}.
+\newblock PhD thesis, Berkeley, CA, USA, 1995.
+\newblock UMI Order No. GAX96-21326.
+
+\bibitem{shapley1953stochastic}
+Lloyd~S. Shapley.
+\newblock Stochastic games.
+\newblock {\em Proceedings of the National Academy of Sciences}, page UC
+  Berkeley Press, 1953.
+
+\bibitem{zwick}
+Uri Zwick and Mike Paterson.
+\newblock The complexity of mean payoff games on graphs.
+\newblock {\em Theor. Comput. Sci.}, 158(1{\&}2):343--359, 1996.
+
+\end{thebibliography}

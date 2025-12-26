@@ -1,0 +1,101 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[utf8x]{inputenc}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{autonum}
+\usepackage{dsfont}
+
+\newtheorem{theorem}{Théorème}
+\newtheorem{lemma}{Lemme}
+\newtheorem{remark}{Remarque}
+
+
+\title{A Polynomial-Time Solution for Max-Affine Fixed-Point Equations}
+
+\author{Bruno Scherrer\footnote{INRIA, bruno.scherrer@inria.fr}}
+
+\date{December 26, 2025}
+
+
+\def\1{{\mathds 1}}
+\def\N{\mathbb N}
+\def\E{\mathbb E}
+\def\R{\mathbb R}
+\def\={\stackrel{def}{=}}
+
+
+\begin{document}
+\maketitle
+
+%\begin{abstract}
+%\end{abstract}
+
+
+On considère un système d'équations de type point fixe d'un opérateur max-affine sur $\R^n$:
+\begin{align}
+\forall i,~~   x_i &= \max_{k \in K_i} [T^{(k)} x]_i  \label{fp}
+\end{align}
+où pour tout $k$, et tout $y \in \R^n$, $T^{(k)} y$ est un vecteur de $\R^n$ dont la ième coordonnée est:
+\begin{align}
+[T^{(k)} y]_i  = \sum_j a^{(k)}_{ij} y_j  + b^{(k)}_i.
+\end{align}
+
+On va décrire un algorithme itératif indexé par $t$ afin de trouver l'ensemble $X^*$ (éventuellement vide) des solutions au l'équation \eqref{fp}.
+ 
+A $t=0$, pour tout $i$, on définit $K_i^{(0)}=K_i$.
+
+A chaque étape $t$, on considére le problème d'optimisation
+\begin{align}
+  \min_{x \in \R^n} ~ \max_{i, k \in K_i^{(t)}} ~~ x_i-[T^{(k)} x]_i \label{lp} \\
+  \mbox{sous les contraintes: }\forall i,~~ \forall k \in K_i^{(t)},~~ x_i \ge [T^{(k)} x]_i.
+\end{align}
+Il est facile de voir que c'est un programme linéaire.
+
+Soient $z^{(t)}$ l'optimum du problème \eqref{lp} et $(x^{(t)},i^{(t)},k^{(t)})$ un couple d'indices d'une solution optimale. 
+
+Si $z^{(t)}=0$, l'algorithme est terminé et l'ensemble $X^*$ est l'ensemble des $x$ qui satisfont
+\begin{align}
+\forall i,~~ \forall k \in K^{(t)}_i,~~   x_i &=  [T^{(k)} x]_i,
+\end{align}
+ce qui définit un singleton ou un polytope.
+
+Si $z>0$, on met à jour les ensembles comme suit:
+\begin{align}
+  K^{(t+1)}_{i^{(t)}} & = K^{(t)}_{i^{(t)}} \backslash \{ k^{(t)} \} \\
+  \forall i \neq i^{(t)}, ~~ K^{(t+1)}_i = K^{(t)}_i
+\end{align}
+
+Si $K^{(t+1)}_{i^{(t)}}$ est vide,  alors l'algorithme termine et l'ensemble $X^*$ est l'ensemble vide.
+
+Cet algorithme s'arrête après au plus $\sum_i K_i -n$ itérations et résolutions de programmes linéaires. En récrivant le système \eqref{fp} à l'aide de $n \sum_i \lceil \log_2 K_i \rceil $ variables et des max sur deux paramètres, le nombre de programmes linéaires à résoudre devient $(n-1) \sum_i \lceil \log_2 K_i \rceil$.
+
+~\\
+
+La validité de l'algorithme résulte du fait (vrai à l'itération 0, et hérité d'itération en itération) que dans la mesure où l'ensemble des contraintes du programme linéaire \eqref{lp} contient l'ensemble des solutions $X^*$, alors pour tout $x^* \in X^*$, on a à chaque étape $t$,
+\begin{align}
+x^*_{i^{(t)}}-[T^{(k^{(t)})} x^*]_{i^{(t)}} ~ \ge ~ x^{(t)}_{i^{(t)}}-[T^{(k^{(t)})} x^{(t)}]_{i^{(t)}} ~ = ~ z ~ > 0.
+\end{align}
+Autrement dit, la contrainte correspondant aux indices $(i^{(t)},k^{(t)})$ n'intervient pas dans la caractérisation de $X^*$. Et on peut donc la supprimer.
+
+~\\
+
+On peut résoudre un programme linéaire en temps $\tilde O(n^3 L)$. Par conséquent, l'algorithme décrit ici a pour complexité polynomiale $\tilde O(n^4 L)$. On en déduit notamment qu'il permet de résoudre en temps polynomial plusieurs problèmes qui peuvent s'écrire sous la forme  \eqref{fp}:
+\begin{itemize}
+  \item les jeux stochastiques sur un graphe $\gamma$-actualisé (avec une dépendance en $\log\frac{1}{1-\gamma}$) ;
+  \item le jeu du coût moyen $\gamma$-actualisé (avec une dépendance en $\log\frac{1}{1-\gamma}$) ;
+  \item le jeu du coût moyen (par réduction au jeu du coût moyen $\gamma$-actualisé avec $\gamma=1-\frac{1}{4n^3W}$ où $W$ est une borne sur le coût entier) ;
+  \item le jeu de parité avec $d$ priorités (par réduction au jeu du coût moyen avec un cout max $W$ en $n^d$) ;
+  \item les problèmes de complémentarité linéaire avec une P-matrice (sans dépendance forte vis-à-vis du spectre de la matrice).
+\end{itemize}
+
+
+
+
+\bibliographystyle{plain}
+\bibliography{biblio.bib} 
+
+\end{document}
