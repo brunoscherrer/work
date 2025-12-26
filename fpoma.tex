@@ -14,11 +14,11 @@
 \newtheorem{remark}{Remarque}
 
 
-\title{A Polynomial-Time Solution for Max-Affine Fixed-Point Equations}
+\title{Un algo polynomial pour les équations de point fixe max-affine}
 
 \author{Bruno Scherrer\footnote{INRIA, bruno.scherrer@inria.fr}}
 
-\date{December 26, 2025}
+\date{26/12/2025}
 
 
 \def\1{{\mathds 1}}
@@ -66,7 +66,7 @@ ce qui définit un singleton ou un polytope.
 Si $z>0$, on met à jour les ensembles comme suit:
 \begin{align}
   K^{(t+1)}_{i^{(t)}} & = K^{(t)}_{i^{(t)}} \backslash \{ k^{(t)} \} \\
-  \forall i \neq i^{(t)}, ~~ K^{(t+1)}_i = K^{(t)}_i
+  \forall i \neq i^{(t)}, ~~ K^{(t+1)}_i &= K^{(t)}_i
 \end{align}
 
 Si $K^{(t+1)}_{i^{(t)}}$ est vide,  alors l'algorithme termine et l'ensemble $X^*$ est l'ensemble vide.
