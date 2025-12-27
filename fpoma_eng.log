@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.8.8)  26 DEC 2025 18:42
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.8.8)  27 DEC 2025 11:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -402,14 +402,14 @@ nation with the same identifier (name{equation.0.1}) has been already used, dup
 licate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.76 \end{align}
-                ]
-Underfull \hbox (badness 10000) in paragraph at lines 84--85
+l.79 
+     ]
+Underfull \hbox (badness 10000) in paragraph at lines 85--86
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 92--93
+Underfull \hbox (badness 10000) in paragraph at lines 93--94
 
  []
 
@@ -424,7 +424,7 @@ Here is how much of TeX's memory you used:
  29371 multiletter control sequences out of 15000+600000
  479543 words of font info for 65 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 60i,11n,63p,660b,409s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 60i,11n,63p,706b,391s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/scherrer/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm0600.
 600pk> </home/scherrer/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1
 000.600pk> </home/scherrer/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/t
@@ -446,10 +446,10 @@ fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf
 -dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on fpoma_eng.pdf (2 pages, 213758 bytes).
+Output written on fpoma_eng.pdf (2 pages, 213178 bytes).
 PDF statistics:
- 148 PDF objects out of 1000 (max. 8388607)
- 101 compressed objects within 2 object streams
+ 146 PDF objects out of 1000 (max. 8388607)
+ 100 compressed objects within 1 object stream
  11 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

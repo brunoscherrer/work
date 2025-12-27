@@ -33,7 +33,7 @@
 
 
 \begin{abstract}
-We consider systems of max-affine fixed-point equations and propose a polynomial-time algorithm to compute their solution set. The algorithm iteratively solves linear programs and removes constraints that cannot participate in any solution, ensuring correctness and polynomial complexity. This approach applies to several well-known problems in theoretical computer science, including stochastic games, mean-payoff games, parity games, and linear complementarity problems with P-matrices. The results are preliminary, have not been peer-reviewed and may contain errors or important gaps; feedback and corrections are welcome. 
+We consider systems of max-affine fixed-point equations with at most one solution and propose a polynomial-time algorithm to compute the solution or decide there is none. The algorithm solves a sequence of linear programs and removes constraints that cannot participate in the solution, ensuring correctness and polynomial complexity. This approach applies to several well-known problems in theoretical computer science, including stochastic games, mean-payoff games, parity games, and linear complementarity problems with P-matrices. The results are preliminary, have not been peer-reviewed and may contain errors or important gaps; feedback and corrections are welcome. 
 \end{abstract}
 
 \paragraph{Disclaimer:} \emph{This preprint proposes a simple solution to some open problems in computer science. It has not been peer-reviewed and may contain errors or important gaps. Feedback and corrections are welcome.}
@@ -49,7 +49,9 @@ where for each $k$ and any $y \in \mathbb{R}^n$, $T^{(k)} y$ is a vector in $\ma
 [T^{(k)} y]_i = \sum_j a^{(k)}_{ij} y_j + b^{(k)}_i.
 \end{align}
 
-We describe an iterative algorithm indexed by $t$ to find the set $X^*$ (possibly empty) of solutions to equation \eqref{fp}.
+We assume that there is either one solution $x^*$ or none to this system.
+
+We describe an iterative algorithm indexed by $t$ to compute $x^*$ or decide there is no solution.
 
 At $t=0$, for each $i$, we set $K_i^{(0)} = K_i$.
 
@@ -63,19 +65,18 @@ It is easy to see that this is a linear program.
 Let $z^{(t)}$ be the optimum of problem \eqref{lp}, and $(x^{(t)}, i^{(t)}, k^{(t)})$ a tuple of indices corresponding to an optimal solution.
 
 \begin{itemize}
-\item If $z^{(t)} = 0$, the algorithm terminates, and the set $X^*$ is the set of $x$ satisfying
+\item If $z^{(t)} = 0$, the algorithm terminates, and $x^*$ is the solution of the linear system
 \begin{align}
-\forall i,~~ \forall k \in K_i^{(t)},~~ x_i = [T^{(k)} x]_i,
+\forall i,~~ \forall k \in K_i^{(t)},~~ x_i = [T^{(k)} x]_i.
 \end{align}
-which defines either a singleton or a polytope.
 
 \item If $z > 0$, we update the sets as follows:
 \begin{align}
 K^{(t+1)}_{i^{(t)}} &= K^{(t)}_{i^{(t)}} \setminus \{ k^{(t)} \} \\
 \forall i \neq i^{(t)}, ~~ K^{(t+1)}_i &= K^{(t)}_i
 \end{align}
+If $K^{(t+1)}_{i^(t)}$ is empty, then the algorithm terminates and we know that there is no solution. Otherwise we go on with the next iteration.
 
-If $K^{(t+1)}_{i^{(t)}}$ is empty, then the algorithm terminates and $X^*$ is empty. Otherwise we go on with the next iteration.
 
 \end{itemize}
 
@@ -83,15 +84,15 @@ This algorithm stops after at most $\sum_i |K_i| - n$ iterations and linear prog
 
 ~\\
 
-The correctness of the algorithm follows from the fact (true at iteration 0 and inherited at each subsequent iteration) that as long as the constraint set of the linear program \eqref{lp} contains the solution set $X^*$, for any $x^* \in X^*$, at each step $t$ we have
+The correctness of the algorithm follows from the fact (true at iteration 0 and inherited at each subsequent iteration) that as long as the constraint set of the linear program \eqref{lp} contains the solution $x^*$, at each step $t$ we have
 \begin{align}
 x^*_{i^{(t)}} - [T^{(k^{(t)})} x^*]_{i^{(t)}} \ge x^{(t)}_{i^{(t)}} - [T^{(k^{(t)})} x^{(t)}]_{i^{(t)}} = z > 0.
 \end{align}
-In other words, the constraint corresponding to indices $(i^{(t)}, k^{(t)})$ does not participate in the characterization of $X^*$, and can safely be removed.
+In other words, the constraint corresponding to indices $(i^{(t)}, k^{(t)})$ does not participate in the characterization of $x^*$, and can safely be removed.
 
 ~\\
 
-A linear program can be solved in time $\tilde O(n^3 L)$. Therefore, the algorithm described here has polynomial complexity $\tilde O(n^4 L)$. In particular, it allows solving in polynomial time several problems that can be expressed in the form \eqref{fp}:
+A linear program with $n$ variables and an input encoding of size $L$ can be solved in time $\tilde O(n^3 L)$. Therefore, the algorithm described here has polynomial complexity $\tilde O(n^4 L)$. In particular, it allows solving in polynomial time several problems that can be expressed in the form \eqref{fp}:
 \begin{itemize}
 \item Turn-based stochastic games on a graph with discount factor $\gamma$ \cite{shapley1953stochastic} (with a dependence on $\log \frac{1}{1-\gamma}$);
 \item Mean payoff games with discount factor $\gamma$ \cite{zwick} (with a dependence on $\log \frac{1}{1-\gamma}$);
