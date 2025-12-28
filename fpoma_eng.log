@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.8.8)  28 DEC 2025 09:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.8.8)  28 DEC 2025 17:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -390,30 +390,25 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 32.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-Underfull \hbox (badness 10000) in paragraph at lines 42--43
-
- []
-
-[1
+) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}pdfTeX warning (ext4): desti
 nation with the same identifier (name{equation.0.1}) has been already used, dup
 licate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.85 \end{align}
-                ]
-Underfull \hbox (badness 10000) in paragraph at lines 129--130
+l.87   \begin{align}
+                    ]
+Underfull \hbox (badness 10000) in paragraph at lines 128--129
 
  []
 
 
 Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
-d on input line 134.
+d on input line 133.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 137--138
+Underfull \hbox (badness 10000) in paragraph at lines 136--137
 
  []
 
@@ -422,13 +417,13 @@ Package rerunfilecheck Info: File `fpoma_eng.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 11576 strings out of 480145
- 192921 string characters out of 5893301
+ 11575 strings out of 480145
+ 192911 string characters out of 5893301
  509116 words of memory out of 5000000
  29376 multiletter control sequences out of 15000+600000
  480162 words of font info for 67 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 60i,11n,63p,523b,393s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 60i,11n,63p,523b,454s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/scherrer/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1000.
 600pk> </home/scherrer/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm0
 600.600pk> </home/scherrer/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/t
@@ -449,10 +444,10 @@ fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on fpoma_eng.pdf (3 pages, 218252 bytes).
+Output written on fpoma_eng.pdf (3 pages, 216785 bytes).
 PDF statistics:
- 156 PDF objects out of 1000 (max. 8388607)
- 110 compressed objects within 2 object streams
- 16 named destinations out of 1000 (max. 500000)
+ 155 PDF objects out of 1000 (max. 8388607)
+ 109 compressed objects within 2 object streams
+ 15 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

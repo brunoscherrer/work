@@ -37,9 +37,6 @@
 We consider systems of max-affine fixed-point equations and propose a polynomial-time algorithm to compute the solution set. The algorithm solves a sequence of linear programs and removes constraints that cannot participate in the solution, ensuring correctness and polynomial complexity. This approach applies to several well-known problems in theoretical computer science, including stochastic games, mean-payoff games, parity games, and linear complementarity problems with P-matrices. 
 \end{abstract}
 
-\paragraph{Disclaimer:} \emph{This preprint proposes a simple solution to some open problems in computer science. It has not been peer-reviewed and may contain errors or important gaps. Feedback and corrections are welcome.}
-
-~\\
 
 Let $n$ and $m$ be integers. For any $x \in \R^n$, we shall write $x_i$ its $ith$-coordinate. Let $I$ be the set $\{1,2,\dots,n\}$. Let $K$ be the set $\{1,2,\dots,m\}$. For any $(i,j) \in I^2$ and $k \in K$, let $a^{(k)}_{ij}$ and $b^{(k)}_i$ be real numbers.
 
@@ -68,7 +65,6 @@ We shall describe an iterative algorithm indexed by $t$, to compute $X^*$.
 At the initial iteration $t=1$ of the algorithm, for each $i \in I$, we set $K_i^{(0)} = K$.
 
 
-
 At each step $t$, we consider the subset of $\R^n$
 \begin{align}
   \C^{(t)} = \{ x ~;~ x \ge T x \} = \{ x ~;~ \forall i \in I,~ \forall k \in K_i^{(t)}, ~x_i \ge [T^{(k)} x]_i \}.
@@ -78,6 +74,9 @@ Since the operators $T^{(k)}$ are affine, this set is convex.
 \begin{remark}
   We have $X^* \subset \C^{(1)}$.
 \end{remark}
+
+If the set $\C^{(1)}$ is empty (which can be checked in polynomial time), it implies that $X^*=\emptyset$ and there is nothing else to do. We therefore assume for what follows that $\C^{(1)}$ is not empty. 
+
   
 Consider the optimization problem
 \begin{align}
