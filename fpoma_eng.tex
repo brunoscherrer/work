@@ -9,16 +9,16 @@
 \usepackage{autonum}
 \usepackage{dsfont}
 
-\newtheorem{theorem}{Théorème}
-\newtheorem{lemma}{Lemme}
-\newtheorem{remark}{Remarque}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
 
 
 \title{A Polynomial-Time Solution for Max-Affine Fixed-Point Equations}
 
 \author{Bruno Scherrer\footnote{INRIA, bruno.scherrer@inria.fr}}
 
-\date{December 26, 2025}
+\date{December 28, 2025}
 
 
 \def\1{{\mathds 1}}
@@ -26,69 +26,113 @@
 \def\E{\mathbb E}
 \def\R{\mathbb R}
 \def\={\stackrel{def}{=}}
-
+\def\C{\mathcal{C}}
+\def\D{\mathcal{D}}
 
 \begin{document}
 \maketitle
 
 
 \begin{abstract}
-We consider systems of max-affine fixed-point equations with at most one solution and propose a polynomial-time algorithm to compute the solution or decide there is none. The algorithm solves a sequence of linear programs and removes constraints that cannot participate in the solution, ensuring correctness and polynomial complexity. This approach applies to several well-known problems in theoretical computer science, including stochastic games, mean-payoff games, parity games, and linear complementarity problems with P-matrices. The results are preliminary, have not been peer-reviewed and may contain errors or important gaps; feedback and corrections are welcome. 
+We consider systems of max-affine fixed-point equations and propose a polynomial-time algorithm to compute the solution set. The algorithm solves a sequence of linear programs and removes constraints that cannot participate in the solution, ensuring correctness and polynomial complexity. This approach applies to several well-known problems in theoretical computer science, including stochastic games, mean-payoff games, parity games, and linear complementarity problems with P-matrices. 
 \end{abstract}
 
 \paragraph{Disclaimer:} \emph{This preprint proposes a simple solution to some open problems in computer science. It has not been peer-reviewed and may contain errors or important gaps. Feedback and corrections are welcome.}
 
 ~\\
 
-We consider a system of fixed-point equations of a max-affine operator on $\mathbb{R}^n$:
+Let $n$ and $m$ be integers. For any $x \in \R^n$, we shall write $x_i$ its $ith$-coordinate. Let $I$ be the set $\{1,2,\dots,n\}$. Let $K$ be the set $\{1,2,\dots,m\}$. For any $(i,j) \in I^2$ and $k \in K$, let $a^{(k)}_{ij}$ and $b^{(k)}_i$ be real numbers.
+
+We consider the following system of equations with unknown variable $x \in \R^n$:
 \begin{align}
-\forall i,~~ x_i &= \max_{k \in K_i} [T^{(k)} x]_i  \label{fp}
+  \forall i \in \{1,2,\dots,n\},~~ x_i &= \max_{k \in K} \sum_j a^{(k)}_{ij} x_j + b^{(k)}_i.  \label{fp}
 \end{align}
-where for each $k$ and any $y \in \mathbb{R}^n$, $T^{(k)} y$ is a vector in $\mathbb{R}^n$ whose $i$-th coordinate is:
+For any $x \in \R^n$, write $T^{(k)} x$ and $T x$ the vectors such that for all $i \in I$,
 \begin{align}
-[T^{(k)} y]_i = \sum_j a^{(k)}_{ij} y_j + b^{(k)}_i.
+  [T^{(k)} x]_i &= \sum_j a^{(k)}_{ij} x_j + b^{(k)}_i, \\
+  [T x]_i & = \max_{k \in K} [T^{(k)} x]_i. 
 \end{align}
-
-We assume that there is either one solution $x^*$ or none to this system.
-
-We describe an iterative algorithm indexed by $t$ to compute $x^*$ or decide there is no solution.
-
-At $t=0$, for each $i$, we set $K_i^{(0)} = K_i$.
-
-At each step $t$, we consider the optimization problem
+For each $k \in K$, $T^{(k)}$ is an affine operator. 
+With these notations, the system of equations \ref{fp} is equivalent to the fixed point equation
 \begin{align}
-\min_{x \in \mathbb{R}^n} ~ \max_{i, k \in K_i^{(t)}} ~~ x_i - [T^{(k)} x]_i \label{lp} \\
-\text{subject to: } \forall i,~~ \forall k \in K_i^{(t)},~~ x_i \ge [T^{(k)} x]_i.
+  x = T x.
 \end{align}
-It is easy to see that this is a linear program.
+Let
+\begin{align}
+  X^* = \{ x ~;~ x=Tx \}
+\end{align}
+denote the set (possibly empty) of solutions of this system. 
 
-Let $z^{(t)}$ be the optimum of problem \eqref{lp}, and $(x^{(t)}, i^{(t)}, k^{(t)})$ a tuple of indices corresponding to an optimal solution.
+We shall describe an iterative algorithm indexed by $t$, to compute $X^*$.
+
+At the initial iteration $t=1$ of the algorithm, for each $i \in I$, we set $K_i^{(0)} = K$.
+
+
+
+At each step $t$, we consider the subset of $\R^n$
+\begin{align}
+  \C^{(t)} = \{ x ~;~ x \ge T x \} = \{ x ~;~ \forall i \in I,~ \forall k \in K_i^{(t)}, ~x_i \ge [T^{(k)} x]_i \}.
+\end{align}
+Since the operators $T^{(k)}$ are affine, this set is convex.
+
+\begin{remark}
+  We have $X^* \subset \C^{(1)}$.
+\end{remark}
+  
+Consider the optimization problem
+\begin{align}
+  \min_{x \in \C^{(t)}} \max_{i \in I} \max_{k \in K_i^{(t)}} ~ x_i - [T^{(k)} x]_i . \label{lp0}
+\end{align}
+\begin{remark}
+  Observe that Problem \ref{lp0} is \emph{different from} the residual minimization formulation  of the fixed point equation \ref{fp}: 
+  \begin{align}
+    \min_{x \in \C^{(t)}} \max_{i \in I} ~ x_i - [T x]_i
+  \end{align}
+  which can be reformulated as
+  \begin{align}
+    \min_{x \in \C^{(t)}} \max_{i \in I} \min_{k \in K_i^{(t)}} ~ x_i - [T^{(k)} x]_i .
+  \end{align}
+  In Problem \ref{lp0}, we \emph{do} maximize over the variable $k$.
+\end{remark}
+We can rewrite Problem \ref{lp0} as follows:
+\begin{align}
+  \min_{x \in \C^{(t)},z \in \D^{(t)}}  z  \label{lp}
+\end{align}
+with set:
+\begin{align}
+  \D^{(t)} = \{ z \in \R ~;~ \forall i \in I,~ \forall k \in K_i^{(t)},~ z \ge x_i - [T^{(k)} x]_i \}.
+\end{align}
+The optimization problem \ref{lp} is a linear program, whose minimal value $z^{(t)}$ is non-negative.
+Let $( x^{(t)}, i^{(t)}, k^{(t)} )$ be (any) parameter values corresponding to the optimal value $z^{(t)}$.
 
 \begin{itemize}
-\item If $z^{(t)} = 0$, the algorithm terminates, and $x^*$ is the solution of the linear system
+\item If $z^{(t)} = 0$, the algorithm terminates, and $X^*$ is set of solutions of the linear system
 \begin{align}
 \forall i,~~ \forall k \in K_i^{(t)},~~ x_i = [T^{(k)} x]_i.
 \end{align}
 
-\item If $z > 0$, we update the sets as follows:
+\item If $z^{(t)} > 0$, we update the sets as follows:
 \begin{align}
 K^{(t+1)}_{i^{(t)}} &= K^{(t)}_{i^{(t)}} \setminus \{ k^{(t)} \} \\
 \forall i \neq i^{(t)}, ~~ K^{(t+1)}_i &= K^{(t)}_i
 \end{align}
-If $K^{(t+1)}_{i^(t)}$ is empty, then the algorithm terminates and we know that there is no solution. Otherwise we go on with the next iteration.
-
+If $K^{(t+1)}_{i^(t)}$ is empty, then the algorithm terminates and we know that $X^*=\emptyset$. Otherwise we go on with the next iteration.
 
 \end{itemize}
 
-This algorithm stops after at most $\sum_i |K_i| - n$ iterations and linear program resolutions. By rewriting system \eqref{fp} using $n \sum_i \lceil \log_2 K_i \rceil$ variables and maxes over two parameters, the number of linear programs to solve can be reduced to $(n-1) \sum_i \lceil \log_2 K_i \rceil$.
+This algorithm stops after at most $(n-1)m$ iterations and linear program resolutions.
 
+\begin{remark}
+  By rewriting system \eqref{fp} using $n \lceil\log_2 m \rceil$ variables and maxes over two parameters, the number of linear programs to solve can be reduced to $2( n \lceil \log_2 m\rceil -1)$.
+\end{remark}
+  
 ~\\
 
-The correctness of the algorithm follows from the fact (true at iteration 0 and inherited at each subsequent iteration) that as long as the constraint set of the linear program \eqref{lp} contains the solution $x^*$, at each step $t$ we have
+The correctness of the algorithm follows from the fact, true at iteration $t=1$  and inherited at each subsequent iteration, that as long as the constraint set $\C^{(t)}$ of the linear program \eqref{lp} contains the whole set $X^*$, we have
 \begin{align}
-x^*_{i^{(t)}} - [T^{(k^{(t)})} x^*]_{i^{(t)}} \ge x^{(t)}_{i^{(t)}} - [T^{(k^{(t)})} x^{(t)}]_{i^{(t)}} = z > 0.
+\forall \bold x \in X^*,~~ \bold x_{i^{(t)}} - [T^{(k^{(t)})} \bold x]_{i^{(t)}} ~\ge~ x^{(t)}_{i^{(t)}} - [T^{(k^{(t)})} x^{(t)}]_{i^{(t)}}  ~=~  z^{(t)} ~>~ 0.
 \end{align}
-In other words, the constraint corresponding to indices $(i^{(t)}, k^{(t)})$ does not participate in the characterization of $x^*$, and can safely be removed.
+In other words, the constraint corresponding to indices $(i^{(t)}, k^{(t)})$ does not participate in the characterization of $X^*$, and can safely be removed.
 
 ~\\
 
@@ -98,7 +142,7 @@ A linear program with $n$ variables and an input encoding of size $L$ can be sol
 \item Mean payoff games with discount factor $\gamma$ \cite{zwick} (with a dependence on $\log \frac{1}{1-\gamma}$);
 \item Mean payoff games (by reduction to the mean payoff games with discount factor $\gamma = 1 - \frac{1}{4 n^3 W}$, where $W$ is a bound on the integer cost  \cite{zwick});
 \item Parity games with $d$ priorities (by reduction to mean payoff games with maximum cost $W$ in $n^d$ \cite{puri});
-\item Linear complementarity problems with a P-matrix (without dependence on the condition number of the matrix \cite{kojima}).
+\item Linear complementarity problems with a P-matrix (without dependence on the condition number of the input matrix \cite{kojima}).
 \end{itemize}
 
 
